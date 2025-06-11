@@ -1,0 +1,89 @@
+﻿@model Mimsv2.Models.RegisterViewModel
+
+@{
+    ViewData["Title"] = "Mims Register Page";
+}
+
+<main>
+    <section class="register_container">
+        <img src="/images/mimsnew.png" class="mims_logo" />
+
+        <form asp-action="RegisterVerify" asp-controller="Login" method="post">
+
+            <br /><br />
+
+            <label class="login_label">Login Name</label>
+            <input class="form-control" asp-for="loginname" />
+            <span asp-validation-for="loginname" class="text-danger"></span>
+
+            <br />
+
+            <label class="login_label">Title</label>
+            <select class="form-control" asp-for="titles" asp-items="Model.Titles">
+                <option value="">Please Select</option>
+            </select>
+            <span asp-validation-for="titles" class="text-danger"></span>
+
+            <br />
+
+            <label class="login_label">Username</label>
+            <input class="form-control" asp-for="username" />
+            <span asp-validation-for="username" class="text-danger"></span>
+
+            <br />
+
+            <label class="login_label">Surname</label>
+            <input class="form-control" asp-for="surname" />
+            <span asp-validation-for="surname" class="text-danger"></span>
+
+            <br />
+
+            <label class="login_label">Email</label>
+            <input class="form-control" asp-for="email" />
+            <span asp-validation-for="email" class="text-danger"></span>
+
+            <br />
+
+            <label class="login_label">Department</label>
+            <select class="form-control" asp-for="department" asp-items="Model.Departments">
+                <option value="">Please Select</option>
+            </select>
+            <span asp-validation-for="department" class="text-danger"></span>
+
+            <br />
+
+            <label class="login_label">Hospital</label>
+            <select class="form-control" asp-for="hospitalid" asp-items="Model.Hospitals">
+                <option value="">Please Select</option>
+            </select>
+            <span asp-validation-for="hospitalid" class="text-danger"></span>
+
+            <br />
+
+            <label class="login_label">Password</label>
+            <input class="form-control" asp-for="password" type="password" />
+            <span asp-validation-for="password" class="text-danger"></span>
+
+            <br />
+
+            <label class="login_label">Confirm Password</label>
+            <input class="form-control" asp-for="confirmPassword" type="password" />
+            <span asp-validation-for="confirmPassword" class="text-danger"></span>
+
+            <br />
+
+            <button type="submit" class="form_btn">Submit</button>
+        </form>
+
+        <div class="register">
+            <a asp-action="Index" asp-controller="Login">Login Here</a>
+            <a href="/mims/login/forgot.asp">Forgot Password</a>
+        </div>
+    </section>
+</main>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation-unobtrusive@3.2.12/dist/jquery.validate.unobtrusive.min.js"></script>
+}
