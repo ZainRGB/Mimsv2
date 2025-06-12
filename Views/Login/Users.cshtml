@@ -1,0 +1,44 @@
+﻿@model List<Mimsv2.Models.LoginModel>
+@{
+    ViewData["Title"] = "All Users";
+}
+
+<h2 class="mb-4">All Users</h2>
+
+@foreach (var group in Model.GroupBy(u => new { u.hospitalid, u.hospitalname }))
+{
+    <h3 class="mt-4">@group.Key.hospitalname (ID: @group.Key.hospitalid)</h3>
+
+    <table class="form_table mb-5">
+        <thead>
+            <tr>
+                <th style="width:90px">Login Name</th>
+                <th style="width:120px">Full Name</th>
+                <th style="width:100px">Email</th>
+                <th>Department</th>
+                <th>Title</th>
+                <th>Access Level</th>
+                <th>Edit</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var user in group)
+            {
+                <tr>
+                    <td>@user.loginname</td>
+                    <td>@user.username @user.surname</td>
+                    <td>@user.email</td>
+                    <td>@user.department</td>
+                    <td>@user.titles</td>
+                    <td>@user.rm</td>
+                    <td>
+                        <a asp-action="EditUser" asp-route-id="@user.id" class="btn btn-sm btn-primary">Edit</a>
+                    </td>
+@*                     <td>
+                        <a asp-action="Delete" asp-route-id="@user.id" class="btn btn-sm btn-danger">Delete</a>
+                    </td> *@
+                </tr>
+            }
+        </tbody>
+    </table>
+}

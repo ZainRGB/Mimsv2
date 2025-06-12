@@ -125,20 +125,7 @@ namespace Mimsv2.Controllers
             return NotFound();
         }
 
-        [HttpPost, ActionName("Delete")]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            using var conn = new NpgsqlConnection(_configuration.GetConnectionString("DefaultConnection"));
-            await conn.OpenAsync();
-
-            string sql = "DELETE FROM tblusers WHERE id = @id";
-            using var cmd = new NpgsqlCommand(sql, conn);
-            cmd.Parameters.AddWithValue("id", id);
-
-            await cmd.ExecuteNonQueryAsync();
-
-            return RedirectToAction("Index");
-        }
+       
 
         [HttpPost]
         public async Task<IActionResult> LoginVerify(LoginModel model)
@@ -245,14 +232,21 @@ namespace Mimsv2.Controllers
 
 
 
-        public async Task<IActionResult> ListUsers()
+        public async Task<IActionResult> Users()
         {
             var users = new List<LoginModel>();
 
             using var conn = new NpgsqlConnection(_configuration.GetConnectionString("DefaultConnection"));
             await conn.OpenAsync();
 
-            string sql = "SELECT id, loginname, username, surname, email, active, department, hospitalid, titles, rm FROM tblusers";
+            //string sql = "SELECT id, loginname, username, surname, email, active, department, hospitalid, titles, rm FROM tblusers Where active = 'Y'  ";
+            string sql = @"
+    SELECT u.id, u.loginname, u.username, u.surname, u.email, u.active,
+           u.department, u.hospitalid, u.titles, u.rm, h.hospital AS hospitalname
+    FROM tblusers u
+    INNER JOIN tblhospitals h ON u.hospitalid = h.hospitalid
+    WHERE u.active = 'Y' AND h.hospitalid != '0'
+    ORDER BY u.hospitalid";
             using var cmd = new NpgsqlCommand(sql, conn);
             using var reader = await cmd.ExecuteReaderAsync();
 
@@ -269,12 +263,14 @@ namespace Mimsv2.Controllers
                     department = reader["department"].ToString(),
                     hospitalid = reader["hospitalid"].ToString(),
                     titles = reader["titles"].ToString(),
-                    rm = reader["rm"].ToString()
+                    rm = reader["rm"].ToString(),
+                    hospitalname = reader["hospitalname"].ToString()
                 });
             }
 
             return View(users);
         }
+
 
         public async Task<IActionResult> Register()
         {
@@ -286,28 +282,18 @@ namespace Mimsv2.Controllers
         [HttpPost]
         public async Task<IActionResult> RegisterVerify(RegisterViewModel model)
         {
-            // Check if login name exists
-            //using var conn = new NpgsqlConnection(_configuration.GetConnectionString("DefaultConnection"));
-            //await conn.OpenAsync();
+           // if (!ModelState.IsValid)
+            //{
+            //    await PopulateDropdowns(model);
+           //     return View("Register", model);
+           // }
 
-
-
-            // if (!ModelState.IsValid)
-            // {
-
-            //     await PopulateDropdowns(model);
-            //     return View("Register", model);
-            //  }
-
-            //this is md5
-            //string hashedPassword = CalculateMD5Hash(model.password);
-
-            // Hash password with Bcrypt
             string hashedPassword = BCrypt.Net.BCrypt.HashPassword(model.password);
 
             using var conn = new NpgsqlConnection(_configuration.GetConnectionString("DefaultConnection"));
             await conn.OpenAsync();
 
+            // Check if loginname exists
             string checkSql = "SELECT COUNT(1) FROM tblusers WHERE loginname = @loginname";
             using var checkCmd = new NpgsqlCommand(checkSql, conn);
             checkCmd.Parameters.AddWithValue("loginname", model.loginname);
@@ -329,11 +315,9 @@ namespace Mimsv2.Controllers
             if (emailExists > 0)
             {
                 ModelState.AddModelError("email", "Email is already registered.");
+                await PopulateDropdowns(model);
                 return View("Register", model);
             }
-
-          
-
 
             string sql = @"
 INSERT INTO tblusers 
@@ -353,7 +337,6 @@ VALUES
             cmd.Parameters.AddWithValue("titles", model.titles ?? "");
             cmd.Parameters.AddWithValue("rm", model.rm ?? "local");
             cmd.Parameters.AddWithValue("dateadd", model.dateadd);
-
 
             await cmd.ExecuteNonQueryAsync();
 
@@ -430,6 +413,154 @@ VALUES
 
             return RedirectToAction("Index", "Login"); // Redirect to login page or homepage
         }
+
+
+
+
+
+
+
+
+
+
+
+        //ADD edit here
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        public async Task<IActionResult> EditUsers(string hospitalId)
+        {
+            var users = new List<LoginModel>();
+
+            using var conn = new NpgsqlConnection(_configuration.GetConnectionString("DefaultConnection"));
+            await conn.OpenAsync();
+
+            string sql = @"
+        SELECT id, loginname, username, surname, email, active, department, hospitalid, titles, rm 
+        FROM tblusers
+        WHERE hospitalid = @hospitalId";
+
+            using var cmd = new NpgsqlCommand(sql, conn);
+            cmd.Parameters.AddWithValue("hospitalId", hospitalId ?? string.Empty);
+          
+
+            using var reader = await cmd.ExecuteReaderAsync();
+            while (await reader.ReadAsync())
+            {
+                users.Add(new LoginModel
+                {
+                    id = Convert.ToInt32(reader["id"]),
+                    loginname = reader["loginname"].ToString(),
+                    username = reader["username"].ToString(),
+                    surname = reader["surname"].ToString(),
+                    email = reader["email"].ToString(),
+                    active = reader["active"].ToString(),
+                    department = reader["department"].ToString(),
+                    hospitalid = reader["hospitalid"].ToString(),
+                    titles = reader["titles"].ToString(),
+                    rm = reader["rm"].ToString()
+                });
+            }
+
+            return View(Users);
+            //return View(EditUsers);
+        }
+
+
+
+
+
+
+
+
+
+
+
+        public async Task<IActionResult> EditUser(int id)
+        {
+            var model = new RegisterViewModel();
+
+
+            using var conn = new NpgsqlConnection(_configuration.GetConnectionString("DefaultConnection"));
+            await conn.OpenAsync();
+
+            string sql = "SELECT * FROM tblusers WHERE id = @id";
+            using var cmd = new NpgsqlCommand(sql, conn);
+            cmd.Parameters.AddWithValue("id", id);
+
+            using var reader = await cmd.ExecuteReaderAsync();
+            if (await reader.ReadAsync())
+            {
+                model.id = id;
+                model.loginname = reader["loginname"].ToString();
+                model.username = reader["username"].ToString();
+                model.surname = reader["surname"].ToString();
+                model.email = reader["email"].ToString();
+                model.department = reader["department"].ToString();
+                model.hospitalid = reader["hospitalid"].ToString();
+                model.titles = reader["titles"].ToString();
+                model.active = reader["active"].ToString();
+            }
+
+            await PopulateDropdowns(model);
+            return View("EditUsers", model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateUser(RegisterViewModel model, string submit)
+        {
+            using var conn = new NpgsqlConnection(_configuration.GetConnectionString("DefaultConnection"));
+            await conn.OpenAsync();
+
+            string sql = @"
+        UPDATE tblusers SET 
+            loginname = @loginname,
+            username = @username,
+            surname = @surname,
+            email = @email,
+            department = @department,
+            hospitalid = @hospitalid,
+            titles = @titles,
+            active = @active
+        WHERE id = @id";
+
+            using var cmd = new NpgsqlCommand(sql, conn);
+            cmd.Parameters.AddWithValue("loginname", model.loginname);
+            cmd.Parameters.AddWithValue("username", model.username);
+            cmd.Parameters.AddWithValue("surname", model.surname);
+            cmd.Parameters.AddWithValue("email", model.email);
+            cmd.Parameters.AddWithValue("department", model.department);
+            cmd.Parameters.AddWithValue("hospitalid", model.hospitalid);
+            cmd.Parameters.AddWithValue("titles", model.titles);
+            cmd.Parameters.AddWithValue("active", submit == "Delete" ? "N" : "Y");
+            cmd.Parameters.AddWithValue("id", model.id);
+
+            await cmd.ExecuteNonQueryAsync();
+
+            return RedirectToAction("Users");
+        }
+
 
     }
 }

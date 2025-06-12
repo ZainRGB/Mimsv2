@@ -10,6 +10,7 @@ namespace Mimsv2.Models
         public List<SelectListItem> Hospitals { get; set; } = new List<SelectListItem>();
         public List<SelectListItem> Titles { get; set; } = new List<SelectListItem>();
 
+        public int id { get; set; }
 
         [Required(ErrorMessage = "Login name is required")]
         public string loginname { get; set; } = string.Empty;
@@ -39,6 +40,7 @@ namespace Mimsv2.Models
 
         [Required(ErrorMessage = "Title is required")]
         public string titles { get; set; } = string.Empty;
+        public string active { get; set; } = string.Empty;
        
 
         // Additional fields

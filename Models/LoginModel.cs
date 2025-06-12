@@ -25,6 +25,7 @@ namespace Mimsv2.Models
         public string hospitalid { get; set; } = string.Empty;
         public string titles { get; set; } = string.Empty;
         public string rm { get; set; } = string.Empty;
+        public string hospitalname { get; set; } = string.Empty;
 
 
     }

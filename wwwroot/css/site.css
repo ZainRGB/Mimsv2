@@ -95,3 +95,26 @@ body {
 .form_btn:hover{
     background-color:orangered;
 }
+
+.form_table{
+    width:100%;
+    font-size:0.96rem;
+    border-collapse:collapse;
+
+}
+
+.form_table th{
+    background-color:lightgrey;
+    padding:6px;
+}
+    .form_table td {
+        padding: 6px;
+    }
+
+    .form_table tr:nth-child(odd) {
+        background-color: white;
+    }
+
+    .form_table tr:nth-child(even) {
+        background-color: whitesmoke;
+    }

@@ -1,0 +1,82 @@
+﻿@model Mimsv2.Models.RegisterViewModel
+
+@{
+    ViewData["Title"] = "Mims Users Page";
+}
+
+<main>
+    <section class="register_container">
+        <img src="/images/mimsnew.png" class="mims_logo" />
+
+        <form asp-action="UpdateUser" asp-controller="Login" method="post">
+            <input type="hidden" asp-for="id" />
+
+            <br /><br />
+
+            <label class="login_label">Login Name</label>
+            <input class="form-control" asp-for="loginname" vallue="@Model.loginname" />
+            <span asp-validation-for="loginname"  class="text-danger"></span>
+
+            <br />
+
+            <label class="login_label">Title</label>
+            <select class="form-control" asp-for="titles" asp-items="Model.Titles">
+                <option value="@Model.titles">@Model.titles</option>
+            </select>
+            <span asp-validation-for="titles" class="text-danger"></span>
+
+            <br />
+
+            <label class="login_label">Username</label>
+            <input class="form-control" asp-for="username" value="@Model.username" />
+            <span asp-validation-for="username" class="text-danger"></span>
+
+            <br />
+
+            <label class="login_label">Surname</label>
+            <input class="form-control" asp-for="surname" value="@Model.surname"/>
+            <span asp-validation-for="surname" class="text-danger"></span>
+
+            <br />
+
+            <label class="login_label">Email</label>
+            <input class="form-control" asp-for="email" value="@Model.email"/>
+            <span asp-validation-for="email" class="text-danger"></span>
+
+            <br />
+
+            <label class="login_label">Department</label>
+            <select class="form-control" asp-for="department" asp-items="Model.Departments">
+                <option value="@Model.department">@Model.department</option>
+            </select>
+            <span asp-validation-for="department" class="text-danger"></span>
+
+            <br />
+
+            <label class="login_label">Hospital</label>
+            <select class="form-control" asp-for="hospitalid" asp-items="Model.Hospitals">
+                <option value="@Model.hospitalid">@Model.Hospitals</option>
+            </select>
+            <span asp-validation-for="hospitalid" class="text-danger"></span>
+
+
+
+            <br />
+
+            <button type="submit" name="submit" value="Update" class="btn btn-primary">Update</button>
+            
+            <button type="submit" name="submit" value="Delete" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this user?')">
+                Delete User
+            </button>
+        @*     <button type="submit" class="form_btn">Submit</button> *@
+        </form>
+
+
+    </section>
+</main>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation-unobtrusive@3.2.12/dist/jquery.validate.unobtrusive.min.js"></script>
+}
