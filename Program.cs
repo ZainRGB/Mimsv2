@@ -8,38 +8,27 @@ using Npgsql;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-//builder.Services.AddControllersWithViews();
 builder.Services.AddControllersWithViews()
     .AddViewOptions(options =>
     {
         options.HtmlHelperOptions.ClientValidationEnabled = true;
     });
 
-
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
-
-//this
 
 builder.Services.AddScoped<NpgsqlConnection>(provider =>
 {
     var config = provider.GetRequiredService<IConfiguration>();
-    var connString = config.GetConnectionString("DefaultConnection"); // or whatever your key is
+    var connString = config.GetConnectionString("DefaultConnection");
     return new NpgsqlConnection(connString);
 });
-//this
-
 
 builder.Services.Configure<SmtpSettings>(
     builder.Configuration.GetSection("SmtpSettings")
 );
 
 builder.Services.AddTransient<EmailService>();
-
-
-
-
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
@@ -48,13 +37,19 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         options.AccessDeniedPath = "/Login/AccessDenied";
     });
 
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
+
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
@@ -63,10 +58,16 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseSession();          // Must be before auth middleware
+
+app.UseAuthentication();
+
+
 app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    //pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=Login}/{action=Logout}/{id?}");
 
 app.Run();

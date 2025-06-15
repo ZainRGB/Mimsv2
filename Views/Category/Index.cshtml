@@ -1,0 +1,53 @@
+﻿@model List<Mimsv2.Models.CategoryModel>
+@{
+    ViewData["Title"] = "Mims Category Page";
+}
+
+
+
+
+<table class="form_table mb-5">
+    <thead>
+        <tr>
+            <th colspan="2" style="background-color:white;"><h3>Incident Categories</h3></th>
+            <th colspan="3" style="background-color:white;text-align:right;"><a asp-controller="Category" asp-action="AddCategory" class="btn btn-sm btn-secondary" style="width:200px;">Add New Category</a></th>
+        </tr>
+
+        <tr>
+            <th>Cat</th>
+            <th>Sub Category 1</th>
+            <th>Sub Category 2</th>
+            <th>Sub Category 3</th>
+            <th>Edit</th>
+        </tr>
+    </thead>
+    <tbody>
+        @{
+            // Group by the main category
+            var groupedCategories = Model.GroupBy(c => c.cat);
+        }
+
+        @foreach (var categoryGroup in groupedCategories)
+        {
+            // Category header row
+            <tr>
+                <th colspan="5" style="background-color:limegreen;color:white;">@categoryGroup.Key</th>
+            </tr>
+
+            // Subcategory rows for this category
+            @foreach (var item in categoryGroup)
+            {
+                <tr>
+                    <td>@item.cat</td>
+                    <td>@item.subcat1</td>
+                    <td>@item.subcat2</td>
+                    <td>@item.subcat3</td>
+                    <td>
+                        <a asp-controller="Category" asp-action="EditCategory" asp-route-id="@item.id"
+                           class="btn btn-sm btn-primary">Edit</a>
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>

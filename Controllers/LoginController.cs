@@ -125,7 +125,7 @@ namespace Mimsv2.Controllers
             return NotFound();
         }
 
-       
+
 
         [HttpPost]
         public async Task<IActionResult> LoginVerify(LoginModel model)
@@ -163,6 +163,15 @@ namespace Mimsv2.Controllers
 
             int userId = Convert.ToInt32(reader["id"]);
 
+            //added
+            string loginname = reader["loginname"].ToString() ?? "";
+            string username = reader["username"].ToString() ?? "";
+            string surname = reader["surname"].ToString() ?? "";
+            string email = reader["email"].ToString() ?? "";
+            string hospitalid = reader["hospitalid"].ToString() ?? "";
+            string title = reader["titles"].ToString() ?? "";
+            //added
+
             reader.Close();
 
             // 2. Verify password (detect bcrypt or MD5)
@@ -199,12 +208,34 @@ namespace Mimsv2.Controllers
             if (!passwordMatches)
             {
                 ModelState.AddModelError("password", "Incorrect password. Please try again.");
+
+                // Use the variables we stored earlier, not the reader which is closed
+                HttpContext.Session.SetString("loginname", loginname);
+                HttpContext.Session.SetString("username", username);
+                HttpContext.Session.SetString("surname", surname);
+                HttpContext.Session.SetString("titles", title);
+                HttpContext.Session.SetString("email", email);
+                HttpContext.Session.SetString("hospitalid", hospitalid);
+
                 return View("Index", model);
             }
 
             // 3. Password ok — sign in user
+            // Set session data for successful login
+            HttpContext.Session.SetString("loginname", loginname);
+            HttpContext.Session.SetString("username", username);
+            HttpContext.Session.SetString("surname", surname);
+            HttpContext.Session.SetString("titles", title);
+            HttpContext.Session.SetString("email", email);
+            HttpContext.Session.SetString("hospitalid", hospitalid);
+            HttpContext.Session.SetString("accessLevel", accessLevel);
+
             var claims = new List<Claim>
-    {
+{
+
+
+
+
         new Claim(ClaimTypes.Name, dbLoginName),
         new Claim("AccessLevel", accessLevel)
     };
@@ -241,12 +272,12 @@ namespace Mimsv2.Controllers
 
             //string sql = "SELECT id, loginname, username, surname, email, active, department, hospitalid, titles, rm FROM tblusers Where active = 'Y'  ";
             string sql = @"
-    SELECT u.id, u.loginname, u.username, u.surname, u.email, u.active,
-           u.department, u.hospitalid, u.titles, u.rm, h.hospital AS hospitalname
-    FROM tblusers u
-    INNER JOIN tblhospitals h ON u.hospitalid = h.hospitalid
-    WHERE u.active = 'Y' AND h.hospitalid != '0'
-    ORDER BY u.hospitalid";
+        SELECT u.id, u.loginname, u.username, u.surname, u.email, u.active,
+               u.department, u.hospitalid, u.titles, u.rm, h.hospital AS hospitalname
+        FROM tblusers u
+        INNER JOIN tblhospitals h ON u.hospitalid = h.hospitalid
+        WHERE u.active = 'Y' AND h.hospitalid != '0'
+        ORDER BY u.hospitalid";
             using var cmd = new NpgsqlCommand(sql, conn);
             using var reader = await cmd.ExecuteReaderAsync();
 
@@ -272,6 +303,86 @@ namespace Mimsv2.Controllers
         }
 
 
+
+
+
+        //public async Task<IActionResult> Users()
+        //{
+        //    var users = new List<LoginModel>();
+        //    var currentRole = HttpContext.Session.GetString("rm");
+        //    var currentHospitalId = HttpContext.Session.GetString("hospitalid");
+
+        //    using var conn = new NpgsqlConnection(_configuration.GetConnectionString("DefaultConnection"));
+        //    await conn.OpenAsync();
+
+        //    string sql;
+
+        //    if (currentRole == "admin")
+        //    {
+        //        // 🔓 Admin: see all users
+        //        sql = @"
+        //    SELECT u.id, u.loginname, u.username, u.surname, u.email, u.active,
+        //           u.department, u.hospitalid, u.titles, u.rm, h.hospital AS hospitalname
+        //    FROM tblusers u
+        //    INNER JOIN tblhospitals h ON u.hospitalid = h.hospitalid
+        //    WHERE u.active = 'Y' AND h.hospitalid != '0'
+        //    ORDER BY u.hospitalid";
+        //    }
+        //    else
+        //    {
+        //        // 🔐 Local/Main: see users only from their hospital
+        //        sql = @"
+        //    SELECT u.id, u.loginname, u.username, u.surname, u.email, u.active,
+        //           u.department, u.hospitalid, u.titles, u.rm, h.hospital AS hospitalname
+        //    FROM tblusers u
+        //    INNER JOIN tblhospitals h ON u.hospitalid = h.hospitalid
+        //    WHERE u.active = 'Y' AND h.hospitalid = @hospitalid
+        //    ORDER BY u.hospitalid";
+        //    }
+
+        //    using var cmd = new NpgsqlCommand(sql, conn);
+
+        //    if (currentRole != "admin")
+        //        cmd.Parameters.AddWithValue("hospitalid", currentHospitalId);
+
+        //    using var reader = await cmd.ExecuteReaderAsync();
+
+        //    while (await reader.ReadAsync())
+        //    {
+        //        users.Add(new LoginModel
+        //        {
+        //            id = Convert.ToInt32(reader["id"]),
+        //            loginname = reader["loginname"].ToString(),
+        //            username = reader["username"].ToString(),
+        //            surname = reader["surname"].ToString(),
+        //            email = reader["email"].ToString(),
+        //            active = reader["active"].ToString(),
+        //            department = reader["department"].ToString(),
+        //            hospitalid = reader["hospitalid"].ToString(),
+        //            titles = reader["titles"].ToString(),
+        //            rm = reader["rm"].ToString(),
+        //            hospitalname = reader["hospitalname"].ToString()
+        //        });
+        //    }
+
+        //    return View(users);
+        //}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         public async Task<IActionResult> Register()
         {
             var model = new RegisterViewModel();
@@ -282,11 +393,11 @@ namespace Mimsv2.Controllers
         [HttpPost]
         public async Task<IActionResult> RegisterVerify(RegisterViewModel model)
         {
-           // if (!ModelState.IsValid)
+            // if (!ModelState.IsValid)
             //{
             //    await PopulateDropdowns(model);
-           //     return View("Register", model);
-           // }
+            //     return View("Register", model);
+            // }
 
             string hashedPassword = BCrypt.Net.BCrypt.HashPassword(model.password);
 
@@ -405,15 +516,24 @@ VALUES
             return BitConverter.ToString(hashBytes).Replace("-", "").ToLower();
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> Logout()
+        //{
+        //    await HttpContext.SignOutAsync(); // Signs out the current user
+
+        //    return RedirectToAction("Index", "Login"); // Redirect to login page or homepage
+        //}
+        [HttpGet, HttpPost]
+
         public async Task<IActionResult> Logout()
         {
-            await HttpContext.SignOutAsync(); // Signs out the current user
 
-            return RedirectToAction("Index", "Login"); // Redirect to login page or homepage
+            await HttpContext.SignOutAsync();
+            //return RedirectToAction("Index", "Login");
+
+            return RedirectToAction("Index", "Home");
         }
-
 
 
 
@@ -463,7 +583,7 @@ VALUES
 
             using var cmd = new NpgsqlCommand(sql, conn);
             cmd.Parameters.AddWithValue("hospitalId", hospitalId ?? string.Empty);
-          
+
 
             using var reader = await cmd.ExecuteReaderAsync();
             while (await reader.ReadAsync())

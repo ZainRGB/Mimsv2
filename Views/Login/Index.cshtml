@@ -6,13 +6,11 @@
 
 <main>
 
-<section class="login_container">
-    <img src="/images/mimsnew.png" class="mims_logo" />
-
-  
+<section class="login_container" style="margin-top:0;">
+    <img src="/images/mimsv2.png" class="mims_logo" />
             <form asp-action="LoginVerify" asp-controller="Login" method="post">
             @Html.AntiForgeryToken()
-        <br /><br />
+        <br />
         <label for="loginname" class="login_label">Login Name</label>
         <input class="form-control" type="text" asp-for="loginname" />
             <span asp-validation-for="loginname" class="text-danger"></span>
@@ -28,7 +26,7 @@
     <div class="register">
         <a asp-action="Register" asp-controller="Login">Register Here</a>
    
-        <a href="/login/">Forgot Password</a>
+            <a  asp-area="" asp-controller="Account" asp-action="ForgotPassword">Forgot Password</a>
     </div>
 
 </section>

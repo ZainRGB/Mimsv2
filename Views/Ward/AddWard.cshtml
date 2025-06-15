@@ -1,0 +1,32 @@
+﻿@model Mimsv2.Models.WardModel
+
+@{
+    ViewData["Title"] = "Add New Ward";
+}
+
+<h2>Add New Ward</h2>
+
+<form asp-action="AddWard" method="post">
+    <input type="hidden" asp-for="description" />
+
+    <div class="form-group">
+        <label asp-for="hospitalid">Select Hospital</label>
+        <select asp-for="hospitalid" class="form-control" asp-items="Model.Hospitals">
+            <option value="">-- Please select a hospital --</option>
+        </select>
+        <span asp-validation-for="hospitalid" class="text-danger"></span>
+    </div>
+    <br />
+    <div class="form-group">
+        <label asp-for="department" class="control-label">Ward Name</label>
+        <input asp-for="department" class="form-control" />
+        <span asp-validation-for="department" class="text-danger"></span>
+    </div>
+    <br />
+    <button type="submit" class="btn btn-primary">Save</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -5,12 +5,15 @@
 
 <h2 class="mb-4">All Users</h2>
 
+
+
 @foreach (var group in Model.GroupBy(u => new { u.hospitalid, u.hospitalname }))
 {
     <h3 class="mt-4">@group.Key.hospitalname (ID: @group.Key.hospitalid)</h3>
 
     <table class="form_table mb-5">
         <thead>
+
             <tr>
                 <th style="width:90px">Login Name</th>
                 <th style="width:120px">Full Name</th>

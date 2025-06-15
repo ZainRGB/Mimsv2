@@ -1,0 +1,49 @@
+﻿@model List<Mimsv2.Models.WardModel>
+@{
+    ViewData["Title"] = "Mims Wards Page";
+}
+<h3>Wards</h3>
+
+
+@foreach (var group in Model.GroupBy(u => new { u.hospitalid, u.hospitalname }))
+{
+    <table class="form_table mb-5">
+        <thead>
+            <tr>
+                <th colspan="2" style="background-color:white;"> <h3 class="mt-4">@group.Key.hospitalname (ID: @group.Key.hospitalid)</h3></th>
+                <th colspan="2" style="background-color:white;text-align:right;">
+                    <a asp-controller="Ward" asp-action="AddWard" asp-route-id="@group.Key.hospitalid" class="btn btn-sm btn-secondary" style="width:260px;">
+                        Add New Ward
+                    </a>
+                </th>
+            </tr>
+   
+    
+        
+
+            <tr>
+                <th style="width:250px">Hospital</th>
+                <th style="width:250px">Ward</th>
+                <th style="width:100px">Edit</th>
+                @* <th style="width:100px">Delete</th> *@
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var ward in group)
+            {
+                <tr>
+                    <td>@ward.hospitalname</td>
+                    <td>@ward.department</td>
+                    <td>
+                        <a asp-controller="Ward" asp-action="EditWard" asp-route-id="@ward.id" class="btn btn-sm btn-primary">Edit</a>
+                    </td>
+@*                      <td>
+                        <a asp-controller="Ward" asp-action="DeleteWard" asp-route-id="@ward.id" class="btn btn-sm btn-danger">Delete</a>
+                    </td>  *@
+                    <td></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

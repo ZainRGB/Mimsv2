@@ -1,4 +1,13 @@
-﻿<!DOCTYPE html>
+﻿@using System.Security.Claims
+@{
+    var user = (ClaimsPrincipal)User;
+    var accessLevel = user.FindFirst("AccessLevel")?.Value?.ToLower(); // e.g., "admin", "main", "local"
+    var isAuthenticated = User.Identity.IsAuthenticated;
+}
+
+
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -7,14 +16,19 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Mimsv2.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
 </head>
 <body>
+    <div id="spinner-overlay">
+        <div class="spinner"></div>
+    </div>
+
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Mimsv2</a>
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index"><img src="/images/logotrans.png" class="melo_logo" alt="Logo" /></a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
+                aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
@@ -31,26 +45,33 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Login" asp-action="Register">Register</a>
                         </li>
-
+@* 
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="ForgotPassword">Forgot Password</a>
                         </li>
 
-                        <li class="nav-item">
-                        <a asp-controller="Login" asp-action="Users" class="btn btn-outline-secondary">Manage Users</a>
-                        </li>
-
-
                         <li>
-                        <form asp-controller="Login" asp-action="Logout" method="post" id="logoutForm">
-                            <button type="submit" class="btn btn-link">Logout</button>
-                        </form>
-                        </li>
+                            <form asp-controller="Login" asp-action="Logout" method="post" id="logoutForm">
+                                <button type="submit" class="btn btn-link">Logout</button>
+                            </form>
+                        </li> *@
 
                         <ul class="navbar-nav ms-auto">
-                            <li class="nav-item">
-                                <img src="/images/logotrans.png" class="melo_logo" alt="Logo" />
+                            <li class="nav-item" style="display:inline;">
+
+                                @if (isAuthenticated)
+                                {
+                                    var name = Context.Session.GetString("username") ?? "Guest";
+                                    var surname = Context.Session.GetString("surname") ?? "GuestSurname";
+                                   <p style="color:orangered;margin-right:20px;font-weight:500;">Hi @name @surname
+
+                                        <a asp-controller="Login" asp-action="Logout" method="post" id="logoutForm" style="display:inline-block;margin-left:20px;">
+                                            <i class="bi bi-box-arrow-left"></i> Logout
+										</a>
+									</p>
+                                }
+                       
                             </li>
                         </ul>
 
@@ -59,11 +80,269 @@
             </div>
         </nav>
     </header>
-    <div class="container">
-        <main role="main" class="pb-3">
+
+
+    @if (isAuthenticated)
+    { 
+
+        <div class="app-container">
+
+            <div class="side_nav" id="sideNav">
+
+                @* GROUP QA Sr Myra, Sr Juna etc *@
+                @if (accessLevel == "admin")
+                {
+
+                    
+                <div class="nav-item">
+                    <a asp-controller="Home" asp-action="AdminDashboard">
+                            <div class="tooltip-container group">
+                        <div class="icon"><i class="bi bi-house-gear-fill"></i></div>
+                                <span class="tooltip-text">
+                                    Home
+                                </span>
+                            </div>
+                        <span class="text">Home</span>
+                    </a>
+                </div>
+
+
+
+
+                    <div class="nav-item">
+                        <a asp-controller="Form" asp-action="IncidentForm">
+                            <div class="tooltip-container group">
+                                <div class="icon"><i class="bi bi-file-text"></i></div>
+                                <span class="tooltip-text">
+                                    New Incident
+                                </span>
+                            </div>
+                            <span class="text">New Incident</span>
+                        </a>
+                    </div>
+
+
+                    <div class="nav-item">
+                        <a asp-controller="Category" asp-action="Index">
+                            <div class="tooltip-container group">
+                                <div class="icon"><i class="bi bi-list-check"></i></div>
+                                <span class="tooltip-text">
+                                    Categories
+                                </span>
+                            </div>
+                            <span class="text">Categories</span>
+                        </a>
+                    </div>
+
+
+
+                    <div class="nav-item">
+                        <a asp-controller="Ward" asp-action="Index">
+                            <div class="tooltip-container group">
+                                <div class="icon"><i class="bi bi-boxes"></i></div>
+                                <span class="tooltip-text">
+                                    Wards
+                                </span>
+                            </div>
+                            <span class="text">Wards</span>
+                        </a>
+                    </div>
+
+
+                    <div class="nav-item">
+                        <a asp-controller="Login" asp-action="Users">
+                            <div class="tooltip-container group">
+                                <div class="icon"><i class="bi bi-people"></i></div>
+                                <span class="tooltip-text">
+                                    Users
+                                </span>
+                            </div>
+                            <span class="text">Users</span>
+                        </a>
+                    </div>
+
+                }
+                @* Hospital QA *@
+                else if (accessLevel == "admin"){
+                    <div class="nav-item">
+                        <a asp-controller="Home" asp-action="MainDashboard">
+                            <div class="icon"><i class="bi bi-house-gear-fill"></i></div>
+                            <span class="text">Home</span>
+                        </a>
+                    </div>
+
+
+                    <div class="nav-item">
+                        <a href="">
+                            <div class="icon"><i class="bi bi-sticky"></i></div>
+                            <span class="text">New Incident</span>
+                        </a>
+                    </div>
+
+                    <div class="nav-item">
+                        <a href="">
+                            <div class="icon"><i class="bi bi-list-check"></i></div>
+                            <span class="text">Categories</span>
+                        </a>
+                    </div>
+
+                    <div class="nav-item">
+                        <a href="">
+                            <div class="icon"><i class="bi bi-boxes"></i></div>
+                            <span class="text">Wards</span>
+                        </a>
+                    </div>
+
+                    <div class="nav-item">
+                        <a asp-controller="Login" asp-action="Users">
+                            <div class="icon"><i class="bi bi-people"></i></div>
+                            <span class="text">Users</span>
+                        </a>
+                    </div>
+
+                    @* Local Users *@
+                }else{
+                    <div class="nav-item">
+                        <a asp-controller="Home" asp-action="LocalDashboard">
+                            <div class="icon"><i class="bi bi-house-gear-fill"></i></div>
+                            <span class="text">Home</span>
+                        </a>
+                    </div>
+
+
+                    <div class="nav-item">
+                        <a href="">
+                            <div class="icon"><i class="bi bi-sticky"></i></div>
+                            <span class="text">New Incident</span>
+                        </a>
+                    </div>
+
+
+                    <div class="nav-item">
+                        <a href="">
+                            <div class="icon"><i class="bi bi-boxes"></i></div>
+                            <span class="text">Wards</span>
+                        </a>
+                    </div>
+
+
+                }
+
+
+
+
+
+
+
+
+                <div class="nav-item">
+                    <a asp-controller="Login" asp-action="Users">
+                        <div class="tooltip-container group">
+                            <div class="icon"><i class="bi bi-speedometer"></i></div>
+                            <span class="tooltip-text">
+                                Melodash
+                            </span>
+                        </div>
+                        <span class="text">Melodash</span>
+                    </a>
+                </div>
+
+
+            </div>
+            <button class="nav_toggle" id="navToggle">&#9776;</button>
+
+            <main>
+                @RenderBody()
+
+            </main>
+            <a class="shrink-btn" aria-expanded="true">
+                <i class="bi bi-chevron-double-left"></i>
+            </a>
+        </div>
+
+
+
+        <div id="logoutWarningModal" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.6); z-index:9999; align-items:center; justify-content:center;">
+            <div style="background:#fff; padding:30px; border-radius:10px; max-width:400px; width:90%; text-align:center; box-shadow:0 0 15px rgba(0,0,0,0.3);">
+                <h3>⚠️ Inactivity Warning</h3>
+                <p>You’ll be logged out in <span id="countdown">60</span> seconds due to inactivity.</p>
+                <button onclick="stayLoggedIn()" style="margin-top:20px; padding:10px 20px; background:#007bff; color:white; border:none; border-radius:5px;">Stay Logged In</button>
+            </div>
+        </div>
+
+
+
+        <script>
+            let idleTime = 0;
+            const logoutAfter = 7; // minutes
+            const warnAt = 1;      // minutes
+            let warned = false;
+            let countdownInterval;
+
+            setInterval(() => {
+                idleTime++;
+
+                if (idleTime === warnAt && !warned) {
+                    warned = true;
+                    showLogoutModal();
+                }
+
+                if (idleTime >= logoutAfter) {
+                    window.location.href = '/Login/Logout';
+                }
+            }, 240000); // every minute
+
+            function resetIdleTime() {
+                // Don't reset if already warned!
+                if (!warned) {
+                    idleTime = 0;
+                }
+            }
+
+            ['click', 'mousemove', 'keypress', 'scroll', 'touchstart'].forEach(evt =>
+                window.addEventListener(evt, resetIdleTime)
+            );
+
+            function showLogoutModal() {
+                document.getElementById('logoutWarningModal').style.display = 'flex';
+                let countdown = 60;
+                document.getElementById('countdown').innerText = countdown;
+
+                countdownInterval = setInterval(() => {
+                    countdown--;
+                    document.getElementById('countdown').innerText = countdown;
+                    if (countdown <= 0) {
+                        clearInterval(countdownInterval);
+                        window.location.href = '/Login/Logout';
+                    }
+                }, 1000);
+            }
+
+            function hideLogoutModal() {
+                document.getElementById('logoutWarningModal').style.display = 'none';
+                clearInterval(countdownInterval);
+            }
+
+            function stayLoggedIn() {
+                idleTime = 0;
+                warned = false;
+                hideLogoutModal();
+            }
+        </script>
+    }
+    else
+    {
+        <main style="height:100vh;">
+
             @RenderBody()
+
         </main>
-    </div>
+    }
+
+
+
+
+
 
     <footer class="border-top footer text-muted">
         <div class="container">
@@ -74,5 +353,80 @@
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
+
+
+    <script>
+        const navToggle = document.getElementById('navToggle');
+        const sideNav = document.getElementById('sideNav');
+
+        navToggle.addEventListener('click', () => {
+          if (window.innerWidth <= 768) {
+            // Mobile: toggle slide in/out
+            sideNav.classList.toggle('active');
+          } else {
+            // Desktop/tablet: toggle collapsed width
+            sideNav.classList.toggle('collapsed');
+          }
+        });
+
+        // Optional: Close mobile nav if window resized >768px
+        window.addEventListener('resize', () => {
+          if (window.innerWidth > 768) {
+            sideNav.classList.remove('active'); // hide mobile slide nav
+          }
+        });
+
+
+
+
+        const shrink_btn = document.querySelector(".shrink-btn");
+        const side_nav = document.querySelector(".side_nav");
+
+        shrink_btn.addEventListener("click", () => {
+          const isShrunk = document.body.classList.toggle("shrink");
+
+          // Store the state in localStorage
+          localStorage.setItem("side_navShrunk", isShrunk);
+
+          // Update ARIA attribute
+          shrink_btn.setAttribute("aria-expanded", !isShrunk);
+
+          // Animation effects
+          shrink_btn.classList.add("hovered");
+          setTimeout(() => {
+            shrink_btn.classList.remove("hovered");
+          }, 500);
+
+          // If you have active tab functionality
+          if (typeof moveActiveTab === 'function') {
+            setTimeout(moveActiveTab, 400);
+          }
+        });
+
+        // Check localStorage on page load
+        document.addEventListener("DOMContentLoaded", () => {
+          if (localStorage.getItem("side_navShrunk") === "true") {
+            document.body.classList.add("shrink");
+            shrink_btn.setAttribute("aria-expanded", "false");
+          }
+        });
+    </script>
+
+
+
+    <script>
+        window.addEventListener("load", function () {
+            const spinner = document.getElementById("spinner-overlay");
+            if (spinner) {
+                spinner.style.display = "none";
+            }
+        });
+    </script>
+
+
+
+
 </body>
 </html>
+
+

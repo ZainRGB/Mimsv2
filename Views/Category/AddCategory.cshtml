@@ -1,0 +1,43 @@
+﻿@model Mimsv2.Models.CategoryModel
+
+@{
+    ViewData["Title"] = "Add New Category";
+}
+
+<h2>Add New Category</h2>
+
+<form asp-action="AddCategory" method="post">
+    <input type="hidden" asp-for="id" />
+
+    <br />
+    <div class="form-group">
+        <label asp-for="cat" class="control-label">Category</label>
+        <input asp-for="cat" class="form-control" />
+        <span asp-validation-for="cat" class="text-danger"></span>
+    </div>
+    <br />
+
+    <div class="form-group">
+        <label asp-for="subcat1" class="control-label">Sub Category 1</label>
+        <input asp-for="subcat1" class="form-control" />
+    </div>
+    <br />
+
+    <div class="form-group">
+        <label asp-for="subcat2" class="control-label">Sub Category 2</label>
+        <input asp-for="subcat2" class="form-control" />
+    </div>
+    <br />
+
+    <div class="form-group">
+        <label asp-for="subcat3" class="control-label">Sub Category 3</label>
+        <input asp-for="subcat3" class="form-control" />
+    </div>
+    <br />
+
+
+    <button type="submit" class="btn btn-primary">Save</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+</form>
+
+

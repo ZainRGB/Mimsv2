@@ -1,0 +1,515 @@
+﻿@model Mimsv2.Models.FormModel
+@{
+    ViewData["Title"] = "Mims Incident Form";
+}
+
+<h3>New Incident Form</h3>
+Incident Created, Captured and Reported by @Context.Session.GetString("username") @Context.Session.GetString("surname") (@Context.Session.GetString("titles"))
+<br />
+
+
+<form asp-action="IncidentForm" method="post">
+    <input type="hidden" asp-for="CapturedByLoginName" />
+    <input type="hidden" asp-for="CapturedByName" />
+    <input type="hidden" asp-for="CapturedBySurname" />
+    <input type="hidden" asp-for="CapturedByTitle" />
+    <input type="hidden" asp-for="CapturedByEmail" />
+    <input type="hidden" asp-for="HospitalId" />
+
+    <!-- Rest of the form goes here -->
+    <section class="form_grid">
+        <!-- SECTION A -->
+        <div class="form_grid_item_span4">Section A: Incident Details</div>
+
+        <div class="form_grid_item_span2">
+            <label for="hospitalid">Hospital</label>
+            <select class="form-control" asp-for="hospitalid" asp-items="Model.Hospitals" id="hospitalid">
+                <option value="">Please Select</option>
+            </select>
+            <span asp-validation-for="hospitalid" class="text-danger"></span>
+        </div>
+
+        <div class="form_grid_item_span2">
+            <label for="affectedward">Affected Ward</label>
+            <select class="form-control" asp-for="affectedward" asp-items="Model.Departments" id="affectedward" disabled>
+                <option value="">Please Select</option>
+            </select>
+            <span asp-validation-for="affectedward" class="text-danger"></span>
+        </div>
+        <!-- SECTION A -->
+
+
+        <!-- SECTION B -->
+        <div class="form_grid_item_span4">Section B: Person Involved</div>
+
+        <div class="form_grid_item">
+            <label for="inctypescat1">Type of Incident</label>
+            <select class="form-control" asp-for="inctypescat1" id="cat">
+                <option value="">No Category</option>
+            </select>
+        </div>
+
+        <div class="form_grid_item">
+            <label for="inctypescat2">Incident</label>
+            <select class="form-control" asp-for="inctypescat2" id="subcat1" disabled>
+                <option value="">Please select</option>
+            </select>
+        </div>
+
+        <div class="form_grid_item">
+            <label for="inctypescat3">Category</label>
+            <select class="form-control" asp-for="inctypescat3" id="subcat2" disabled>
+                <option value="">Please select</option>
+            </select>
+        </div>
+
+        <div class="form_grid_item">
+            <label for="inctypescat4">Sub Category</label>
+            <select class="form-control" asp-for="inctypescat4" id="subcat3" disabled>
+                <option value="">Please select</option>
+            </select>
+        </div>
+
+
+
+        <div class="form_grid_item">
+            <label for="ptenumber" id="ptenumberLabel">No Incident Selected</label><br />
+            <input type="text" class="form-control" asp-for="ptenumber" id="ptenumberInput">
+        </div>
+
+
+
+                <div class="form_grid_item">
+            <label for="ptenumber">First Name</label><br />
+            <input type="text" class="form-control" asp-for="ptename" id="ptenameInput">
+        </div>
+
+        <div class="form_grid_item">
+            <label for="ptesurname">Surname</label><br />
+            <input type="text" class="form-control" asp-for="ptesurname" id="ptesurnameInput">
+        </div>
+
+        <div class="form_grid_item">
+            <label for="ptetitle">Title</label>
+            <select class="form-control" asp-for="ptetitle" id="ptetitleInput">
+                <option value="">Title</option>
+                <option>Mr</option>
+                <option>Mrs</option>
+                <option>Ms</option>
+                <option>Miss</option>
+                <option>Mast</option>
+                <option>Mx</option>
+                <option>Mz</option>
+                <option>Dr</option>
+                <option>Prof</option>
+                <option>Hon</option>
+                <option>Rev</option>
+                <option>Other</option>
+            </select>
+        </div>
+
+
+        <!-- SECTION C -->
+
+
+        <div class="form_grid_item_span4">Section C: When It Occurred</div>
+
+        <div class="form_grid_item">
+            <label for="priority">Severity</label>
+            <select class="form-control" asp-for="priority" id="priority">
+                <option value="">Please Select</option>
+                <option value="" selected>Select Severity</option>
+                <option value="Minor">Minor</option>
+                <option value="Moderate">Moderate</option>
+                <option value="Major">Major</option>
+            </select>
+            <span asp-validation-for="priority" class="text-danger"></span>
+        </div>
+        
+        <div class="form_grid_item">
+            <label for="incidentdate">Incident Date</label><br />
+            <input type="date" class="form-control" asp-for="incidentdate" id="incidentdate">
+        </div>
+                <div class="form_grid_item">
+            <label for="incidenttime">Incident Time</label><br />
+            <input type="time" class="form-control" asp-for="incidenttime" id="incidenttime">
+        </div>
+       
+        <div class="form_grid_item">
+            <label for="datereported">Incident Date Reported</label><br />
+            <input type="text" class="form-control" asp-for="datereported" id="datereported">
+        </div>
+
+
+
+        <div class="form_grid_item">
+            <label for="invesitgatedby">Investigated By</label>
+            <select class="form-control" asp-for="invesitgatedby" id="invesitgatedby" disabled>
+                <option value="">Please Select</option>
+            </select>
+            <span asp-validation-for="invesitgatedby" class="text-danger"></span>
+        </div>
+
+        <div class="form_grid_item">
+            <label for="Name">Name</label><br />
+            <input type="text" class="form-control" id="Name" readonly>
+        </div>
+
+        <div class="form_grid_item">
+            <label for="Surname">Surname</label><br />
+            <input type="text" class="form-control" id="Surname" readonly>
+        </div>
+
+        <div class="form_grid_item">
+            <label for="Email">Email</label><br />
+            <input type="text" class="form-control" id="Email" readonly>
+        </div>
+
+
+        <br /><br />
+    
+
+    </section>
+    <button type="submit">Submit Incident</button>
+</form>
+
+@* <!---SECTION A---> *@
+@section Scripts {
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const hospitalSelect = document.getElementById("hospitalid");
+        const wardSelect = document.getElementById("affectedward");
+
+        hospitalSelect.addEventListener("change", function () {
+            const hospitalId = this.value;
+
+            if (hospitalId) {
+                wardSelect.disabled = false;
+                wardSelect.innerHTML = '<option value="">Please Select</option>';
+
+                fetch(`/Form/GetDepartmentsByHospital?hospitalId=${hospitalId}`)
+                    .then(res => res.json())
+                    .then(data => {
+                        data.forEach(dept => {
+                            const opt = document.createElement("option");
+                            opt.value = dept.value;
+                            opt.text = dept.text;
+                            wardSelect.appendChild(opt);
+                        });
+                    })
+                    .catch(err => {
+                        console.error("Failed to load departments", err);
+                    });
+            } else {
+                wardSelect.disabled = true;
+                wardSelect.innerHTML = '<option value="">Please Select</option>';
+            }
+        });
+    });
+</script>
+
+@* <!---SECTION B---> *@
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const cat = document.getElementById("cat");
+        const sub1 = document.getElementById("subcat1");
+        const sub2 = document.getElementById("subcat2");
+        const sub3 = document.getElementById("subcat3");
+
+        // Load Categories
+        fetch("/Form/GetIncidentCategories")
+            .then(res => res.json())
+            .then(data => {
+                data.forEach(item => {
+                    cat.append(new Option(item.text, item.value));
+                });
+            });
+
+        cat.addEventListener("change", function () {
+            sub1.disabled = true;
+            sub1.innerHTML = '<option value="">Please select</option>';
+
+            if (this.value) {
+                fetch(`/Form/GetSubCategory1?cat=${this.value}`)
+                    .then(res => res.json())
+                    .then(data => {
+                        sub1.disabled = false;
+                        data.forEach(item => {
+                            sub1.append(new Option(item.text, item.value));
+                        });
+                    });
+            }
+        });
+
+        sub1.addEventListener("change", function () {
+            sub2.disabled = true;
+            sub2.innerHTML = '<option value="">Please select</option>';
+
+            if (this.value) {
+                fetch(`/Form/GetSubCategory2?sub1=${this.value}`)
+                    .then(res => res.json())
+                    .then(data => {
+                        sub2.disabled = false;
+                        data.forEach(item => {
+                            sub2.append(new Option(item.text, item.value));
+                        });
+                    });
+            }
+        });
+
+        sub2.addEventListener("change", function () {
+            sub3.disabled = true;
+            sub3.innerHTML = '<option value="">Please select</option>';
+
+            if (this.value) {
+                fetch(`/Form/GetSubCategory3?sub2=${this.value}`)
+                    .then(res => res.json())
+                    .then(data => {
+                        sub3.disabled = false;
+                        data.forEach(item => {
+                            sub3.append(new Option(item.text, item.value));
+                        });
+                    });
+            }
+        });
+    });
+</script>
+
+
+    <script>
+        $(document).ready(function () {
+
+          function loadSubCategory(level, selectedValue, targetDropdownId, selectedOption = "") {
+            const $dropdown = $(`#${targetDropdownId}`);
+
+            if (!selectedValue) {
+                $dropdown.html('<option value="">No category</option>').prop('disabled', true);
+                return;
+            }
+
+            let endpoint = "";
+
+            if (level === 1) endpoint = "/Form/GetSubCategory1";
+            else if (level === 2) endpoint = "/Form/GetSubCategory2";
+            else if (level === 3) endpoint = "/Form/GetSubCategory3";
+
+            $.ajax({
+                url: endpoint,
+                type: 'GET',
+                data: level === 1
+                    ? { cat: selectedValue }
+                    : level === 2
+                        ? { sub1: selectedValue }
+                        : { sub2: selectedValue },
+                success: function (data) {
+                    if (data.length > 0) {
+                        let options = '<option value="">Please select</option>';
+                        data.forEach(function (item) {
+                            const isSelected = item.value === selectedOption ? 'selected' : '';
+                            options += `<option value="${item.value}" ${isSelected}>${item.text}</option>`;
+                        });
+                        $dropdown.html(options).prop('disabled', false);
+                    } else {
+                        $dropdown.html('<option value="">No category</option>').prop('disabled', true);
+                    }
+                },
+                error: function () {
+                    alert("Failed to load subcategories");
+                    $dropdown.html('<option value="">No category</option>').prop('disabled', true);
+                }
+            });
+        }
+
+
+
+            // === Event Handlers for Dropdown Changes ===
+            $('#cat').change(function () {
+                const cat = $(this).val();
+
+
+        // update label dynamically
+        if (!cat || cat === 'No Category') {
+            // Disable input and set default label
+            $('#ptenumberInput').val('').prop('disabled', true);
+            $('#ptenameInput').val('').prop('disabled', true);
+            $('#ptesurnameInput').val('').prop('disabled', true);
+            $('#ptetitleInput').val('').prop('disabled', true);
+            $('#ptenumberLabel').text("No Incident Selected");
+        } else {
+            // Enable input
+            $('#ptenumberInput').prop('disabled', false);
+            $('#ptenameInput').prop('disabled', false);
+            $('#ptesurnameInput').prop('disabled', false);
+            $('#ptetitleInput').prop('disabled', false);
+
+            // Set label according to category
+            if (cat === "Patient") {
+                $('#ptenumberLabel').text("Clinic Manager Patient Number");
+            } else if (cat === "Employee") {
+                $('#ptenumberLabel').text("Employee Number");
+            } else if (cat === "Visitor" || cat === "Customer") {
+                $('#ptenumberLabel').text("Location");
+            } else if (cat === "Supplier / Service Provider") {
+                $('#ptenumberLabel').text("Company Name");
+            } else if (cat === "Doctor / Practitioner") {
+                $('#ptenumberLabel').text("Practice?");
+            } else if (cat === "Property / Environment") {
+                $('#ptenumberLabel').text("Injured/Affected Person (Environment)");
+            } else {
+                $('#ptenumberLabel').text("Please Select");
+            }
+        }
+
+
+        
+
+
+
+
+                loadSubCategory(1, cat, 'subcat1');
+                $('#subcat2').html('<option value="">No Category</option>');
+                $('#subcat3').html('<option value="">No Category</option>');
+            });
+
+            $('#subcat1').change(function () {
+                const subcat1 = $(this).val();
+                loadSubCategory(2, subcat1, 'subcat2');
+                $('#subcat3').html('<option value="">No Category</option>');
+            });
+
+            $('#subcat2').change(function () {
+                const subcat2 = $(this).val();
+                loadSubCategory(3, subcat2, 'subcat3');
+            });
+
+            // === Preload for Edit ===
+            const selectedCat = '@Model.inctypescat1';
+            const selectedSub1 = '@Model.inctypescat2';
+            const selectedSub2 = '@Model.inctypescat3';
+            const selectedSub3 = '@Model.inctypescat4';
+
+            if (selectedCat) {
+                $('#cat').val(selectedCat);
+                loadSubCategory(1, selectedCat, 'subcat1', selectedSub1);
+            }
+
+            if (selectedSub1) {
+                loadSubCategory(2, selectedSub1, 'subcat2', selectedSub2);
+            }
+
+            if (selectedSub2) {
+                loadSubCategory(3, selectedSub2, 'subcat3', selectedSub3);
+            }
+
+
+
+
+
+
+        if (!selectedCat || selectedCat === 'No Category') {
+            $('#ptenumberInput').val('').prop('disabled', true);
+            $('#ptenameInput').val('').prop('disabled', true);
+            $('#ptesurnameInput').val('').prop('disabled', true);
+            $('#ptetitleInput').val('').prop('disabled', true);
+            $('#ptenumberLabel').text("No Incident Selected");
+        } else {
+            $('#ptenumberInput').prop('disabled', false);
+            $('#ptenameInput').prop('disabled', false);
+            $('#ptesurnameInput').prop('disabled', false);
+            $('#ptetitleInput').prop('disabled', false);
+
+            if (selectedCat === "Patient") {
+                $('#ptenumberLabel').text("Clinic Manager Patient Number");
+            } else if (selectedCat === "Employee") {
+                $('#ptenumberLabel').text("Employee Number");
+            } else if (selectedCat === "Visitor" || selectedCat === "Customer") {
+                $('#ptenumberLabel').text("Location");
+            } else if (selectedCat === "Supplier / Service Provider") {
+                $('#ptenumberLabel').text("Company Name");
+            } else if (selectedCat === "Doctor / Practitioner") {
+                $('#ptenumberLabel').text("Practice?");
+            } else if (selectedCat === "Property / Environment") {
+                $('#ptenumberLabel').text("Injured/Affected Person (Environment)");
+            } else {
+                $('#ptenumberLabel').text("No Incident Selected");
+            }
+        }
+
+
+
+
+
+
+        });
+    </script>
+
+
+@* //SECTION C *@
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const hospitalSelect = document.getElementById("hospitalid");
+            const investigatedBySelect = document.getElementById("invesitgatedby");
+
+            hospitalSelect.addEventListener("change", function () {
+                const hospitalId = this.value;
+
+                if (hospitalId) {
+                    investigatedBySelect.disabled = false;
+                    investigatedBySelect.innerHTML = '<option value="">Please Select</option>';
+
+                    fetch(`/Form/GetInvestigators?hospitalId=${hospitalId}`)
+                        .then(res => res.json())
+                        .then(data => {
+                            data.forEach(user => {
+                                const opt = document.createElement("option");
+                                opt.value = user.value;
+                                opt.text = user.text;
+                                investigatedBySelect.appendChild(opt);
+                            });
+                        })
+                        .catch(err => {
+                            console.error("Failed to load investigators", err);
+                        });
+                } else {
+                    investigatedBySelect.disabled = true;
+                    investigatedBySelect.innerHTML = '<option value="">Please Select</option>';
+                }
+            });
+
+            // Investigator details populate when investigator selected
+            investigatedBySelect.addEventListener("change", function () {
+                const loginname = this.value;
+
+                if (loginname) {
+                    fetch(`/Form/GetInvestigatorDetails?loginname=${loginname}`)
+                        .then(res => res.json())
+                        .then(data => {
+                            if (data) {
+                                document.getElementById('Name').value = data.username;
+                                document.getElementById('Surname').value = data.surname;
+                                document.getElementById('Email').value = data.email;
+                            } else {
+                                document.getElementById('Name').value = '';
+                                document.getElementById('Surname').value = '';
+                                document.getElementById('Email').value = '';
+                            }
+                        })
+                        .catch(() => {
+                            document.getElementById('Name').value = '';
+                            document.getElementById('Surname').value = '';
+                            document.getElementById('Email').value = '';
+                        });
+                } else {
+                    document.getElementById('Name').value = '';
+                    document.getElementById('Surname').value = '';
+                    document.getElementById('Email').value = '';
+                }
+            });
+        });
+    </script>
+
+
+
+}

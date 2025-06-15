@@ -1,0 +1,41 @@
+﻿@model Mimsv2.Models.WardModel
+
+@{
+    ViewData["Title"] = "Edit Ward";
+}
+
+<h2>Edit Ward</h2>
+
+<form asp-action="EditWard" method="post">
+    <input type="hidden" asp-for="id" />
+    <input type="hidden" asp-for="description" />
+
+    <div class="form-group">
+        <label asp-for="hospitalid">Select Hospital</label>
+        <select asp-for="hospitalid" class="form-control" asp-items="Model.Hospitals">
+            <option value="">-- Please select a hospital --</option>
+        </select>
+        <span asp-validation-for="hospitalid" class="text-danger"></span>
+    </div>
+    <br />
+    <div class="form-group">
+        <label asp-for="department">Ward Name</label>
+        <input asp-for="department" class="form-control" />
+        <span asp-validation-for="department" class="text-danger"></span>
+    </div>
+    <br />
+    <div class="form-group">
+        <label asp-for="active">Status (Selecting "Inactive" will delete this ward)</label>
+        <select asp-for="active" class="form-control">
+            <option value="Y">Active</option>
+            <option value="N">Inactive</option>
+        </select>
+    </div>
+    <br />
+    <button type="submit" class="btn btn-primary">Update</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
