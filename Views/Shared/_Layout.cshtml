@@ -274,7 +274,7 @@
 
         <script>
             let idleTime = 0;
-            const logoutAfter = 7; // minutes
+            const logoutAfter = 10; // minutes
             const warnAt = 1;      // minutes
             let warned = false;
             let countdownInterval;
@@ -290,7 +290,7 @@
                 if (idleTime >= logoutAfter) {
                     window.location.href = '/Login/Logout';
                 }
-            }, 240000); // every minute
+            }, 360000); // every minute
 
             function resetIdleTime() {
                 // Don't reset if already warned!

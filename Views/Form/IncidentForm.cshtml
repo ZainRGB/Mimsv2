@@ -8,13 +8,15 @@ Incident Created, Captured and Reported by @Context.Session.GetString("username"
 <br />
 
 
-<form asp-action="IncidentForm" method="post">
+<form asp-action="IncidentFormInput" method="post">
     <input type="hidden" asp-for="CapturedByLoginName" />
     <input type="hidden" asp-for="CapturedByName" />
     <input type="hidden" asp-for="CapturedBySurname" />
     <input type="hidden" asp-for="CapturedByTitle" />
     <input type="hidden" asp-for="CapturedByEmail" />
     <input type="hidden" asp-for="HospitalId" />
+    <input type="hidden" asp-for="CapturedbyDpt" />
+    <input type="hidden" asp-for="active" value="Y" />
 
     <!-- Rest of the form goes here -->
     <section class="form_grid">
@@ -112,7 +114,7 @@ Incident Created, Captured and Reported by @Context.Session.GetString("username"
         <!-- SECTION C -->
 
 
-        <div class="form_grid_item_span4">Section C: When It Occurred</div>
+        <div class="form_grid_item_span4">Section C: When It Occurred and Investigated By.</div>
 
         <div class="form_grid_item">
             <label for="priority">Severity</label>
@@ -137,7 +139,7 @@ Incident Created, Captured and Reported by @Context.Session.GetString("username"
        
         <div class="form_grid_item">
             <label for="datereported">Incident Date Reported</label><br />
-            <input type="text" class="form-control" asp-for="datereported" id="datereported">
+            <input type="date" class="form-control" asp-for="datereported" id="datereported">
         </div>
 
 
@@ -166,11 +168,78 @@ Incident Created, Captured and Reported by @Context.Session.GetString("username"
         </div>
 
 
-        <br /><br />
+
+        <!-- SECTION D -->
+
+
+        <div class="form_grid_item_span4">Section D: Describe the Incident </div>
+
+        <div class="form_grid_item">
+            <label for="dptSelect">Staff Department</label>
+            <select class="form-control" asp-for="assignedcat" id="dptSelect">
+                <option value="">Please Select</option>
+            </select>
+            <span asp-validation-for="assignedcat" class="text-danger"></span>
+        </div>
+
+        <div class="form_grid_item">
+            <label for="dptDetails">Staff Category</label>
+            <select class="form-control" asp-for="assignedstaff" id="dptDetails">
+                <option value="">Please Select</option>
+            </select>
+            <span asp-validation-for="assignedstaff" class="text-danger"></span>
+        </div>
+
+
+
+
+
+        <div class="form_grid_item">
+            <div class="form-check"><br />
+                <input class="form_check" type="checkbox" asp-for="incidentarea" id="incidentarea" value="Day Shift">
+                <label class="form-check-label" for="incidentarea">Day Shift</label>
+            </div>
+        </div>
+
+        <div class="form_grid_item">
+            <div class="form-check"><br />
+                <input class="form_check" type="checkbox" asp-for="incidentareanight" id="incidentareanight" value="Night Shift" />
+                <label class="form-check-label" for="incidentareanight">Night Shift</label>
+            </div>
+        </div>
+
+
+        <div class="form_grid_item_span4">Section E: Investigations / Description / Root Causes  </div>
+
+
+        <div class="form_grid_item_span4_nc">
+            <label>Short Initial Description</label><br>
+            <textarea asp-for="description" class="form_textarea"></textarea>
+        </div>
+        
+        <div class="form_grid_item_span4_nc">
+            <label>
+                Investigation <span style="color:orangered;font-weight:300;font-size:0.85rem;">* (No Investigation, Root Cause and Near Root Cause required for Pressure Injuries)</span>
+            </label><br>
+            <textarea asp-for="investigation" class="form_textarea"></textarea>
+        </div>
+
+                <div class="form_grid_item_span4_nc">
+            <label>Root Cause</label><br>
+            <textarea asp-for="summary" class="form_textarea"></textarea>
+        </div>
+
+        <div class="form_grid_item_span4_nc">
+            <label>Near Root Cause</label><br>
+            <textarea asp-for="summary2" class="form_textarea"></textarea>
+        </div>
+
+
+        <br />
     
 
     </section>
-    <button type="submit">Submit Incident</button>
+    <button type="submit" class="btn btn-primary mt-4">Submit Incident</button>
 </form>
 
 @* <!---SECTION A---> *@
@@ -509,6 +578,57 @@ Incident Created, Captured and Reported by @Context.Session.GetString("username"
             });
         });
     </script>
+@* 
+    SECTION D *@
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const dptSelect = document.getElementById("dptSelect");
+            const dptDetails = document.getElementById("dptDetails");
+
+            // Load department list from DB
+            fetch("/Form/GetEmp")
+                .then(res => res.json())
+                .then(data => {
+                    data.forEach(item => {
+                        const opt = document.createElement("option");
+                        opt.value = item.value;
+                        opt.text = item.text;
+                        dptSelect.appendChild(opt);
+                    });
+                });
+
+            // On department selection change
+            dptSelect.addEventListener("change", function () {
+                const selectedDpt = this.value;
+
+                // Clear and disable second dropdown
+                dptDetails.innerHTML = '<option value="">Please Select</option>';
+                dptDetails.disabled = true;
+
+                if (!selectedDpt) return;
+
+                // Get staff categories for selected department
+                fetch(`/Form/GetEmpDetails?dpt=${encodeURIComponent(selectedDpt)}`)
+                    .then(res => res.json())
+                    .then(data => {
+                        if (Array.isArray(data) && data.length > 0) {
+                            data.forEach(item => {
+                                const opt = document.createElement("option");
+                                opt.value = item.value;
+                                opt.text = item.text;
+                                dptDetails.appendChild(opt);
+                            });
+                            dptDetails.disabled = false;
+                        }
+                    })
+                    .catch(err => {
+                        console.error("Error fetching staff categories:", err);
+                    });
+            });
+        });
+    </script>
+
 
 
 

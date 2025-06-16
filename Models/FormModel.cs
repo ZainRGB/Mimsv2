@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Mimsv2.Models
 {
@@ -28,10 +29,18 @@ namespace Mimsv2.Models
         public string invesitgatedby { get; set; }
         public string assignedcat { get; set; }
         public string assignedstaff { get; set; }
-        public string incidentdate { get; set; } //datefield
+
+        [DataType(DataType.Date)]
+        public DateTime? incidentdate { get; set; } //datefield
         public string incidenttime { get; set; }
-        public string datereported { get; set; } //this must be date
-        public string datecaptured { get; set; } //datefield
+
+        [DataType(DataType.Date)]
+        public DateTime? datereported { get; set; }
+
+
+        [DataType(DataType.Date)]
+        public DateTime? datecaptured { get; set; }
+
         public string summary { get; set; }
         public string description { get; set; }
         public string timecaptured { get; set; }
@@ -41,8 +50,14 @@ namespace Mimsv2.Models
         public string qarid { get; set; }
         public string username { get; set; }
         public string surname { get; set; }
-        public string onholddescdate { get; set; } //datefield
-        public string closeddescdate { get; set; } //datefield
+
+        [DataType(DataType.Date)]
+        public DateTime? onholddescdate { get; set; }
+
+
+        [DataType(DataType.Date)]
+        public DateTime? closeddescdate { get; set; }
+
         public string onholddesctime { get; set; }
         public string closeddesctime { get; set; }
         public string onholddesc { get; set; }
@@ -57,15 +72,24 @@ namespace Mimsv2.Models
         public string correctactiontime { get; set; }
         public string preventaction { get; set; }
         public string preventactiontime { get; set; }
-        public string preventactiondate { get; set; } //datefield
-        public string correctactiondate { get; set; } //datefield
+
+        [DataType(DataType.Date)]
+        public DateTime? preventactiondate { get; set; }
+
+
+        [DataType(DataType.Date)]
+        public DateTime? correctactiondate { get; set; }
+
         public string investigation { get; set; }
         public string summary2 { get; set; }
         public string medrelatedtotal { get; set; }
         public string reportedbydepartment { get; set; }
-        public string incidentexpires { get; set; } //datefield
+
+        [DataType(DataType.Date)]
+        public DateTime? incidentexpires { get; set; } //this must be 7 or 10 days
         public string incidentareanight { get; set; }
         public string acquired { get; set; }
+        public string incidenttype { get; set; }
         public string inctypescat1 { get; set; }
         public string inctypescat2 { get; set; }
         public string inctypescat3 { get; set; }  
@@ -75,6 +99,7 @@ namespace Mimsv2.Models
         public string CapturedBySurname { get; set; }
         public string CapturedByTitle { get; set; }
         public string CapturedByEmail { get; set; }
+        public string CapturedbyDpt { get; set; }
         public string HospitalId { get; set; }
 
 

@@ -417,7 +417,7 @@ body.shrink .shrink-btn {
     border-radius: 0px;
     padding: 0.3rem;
     font-size: 0.85rem;
-    height: 4.5rem;
+ 
 }
 
 .form_grid_item_span2 {
@@ -427,7 +427,7 @@ body.shrink .shrink-btn {
     border-radius: 0px;
     padding: 0.3rem;
     font-size: 0.85rem;
-    height: 4.5rem;
+
 }
 
 .form_grid_item_span4 {
@@ -438,8 +438,35 @@ body.shrink .shrink-btn {
     color: white;
     font-weight: 400;
 }
+.form_grid_item_span4_nc {
+    grid-column: span 4;
+    background-color: whitesmoke;
+    font-size: 0.85rem;
+    background-color: whitesmoke;
+    border-radius: 0px;
+    padding: 0.3rem;
+}
 select:disabled {
     background-color: #f8f9fa;
     color: #6c757d;
     cursor: not-allowed;
+}
+
+.form_check{
+    width:2rem;
+    height:2rem;
+}
+
+.form_textarea{
+    width:100%;
+    height:100px;
+    border:1px solid lightgrey;
+    border-radius:6px;
+    padding:6px;
+}
+
+label {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: grey;
 }

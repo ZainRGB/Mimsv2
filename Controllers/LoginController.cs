@@ -170,6 +170,7 @@ namespace Mimsv2.Controllers
             string email = reader["email"].ToString() ?? "";
             string hospitalid = reader["hospitalid"].ToString() ?? "";
             string title = reader["titles"].ToString() ?? "";
+            string department = reader["department"].ToString() ?? "";
             //added
 
             reader.Close();
@@ -202,6 +203,7 @@ namespace Mimsv2.Controllers
                     updateCmd.Parameters.AddWithValue("password", newHashedPassword);
                     updateCmd.Parameters.AddWithValue("userId", userId);
                     await updateCmd.ExecuteNonQueryAsync();
+
                 }
             }
 
@@ -216,6 +218,8 @@ namespace Mimsv2.Controllers
                 HttpContext.Session.SetString("titles", title);
                 HttpContext.Session.SetString("email", email);
                 HttpContext.Session.SetString("hospitalid", hospitalid);
+                HttpContext.Session.SetString("department", department);
+
 
                 return View("Index", model);
             }
@@ -229,6 +233,8 @@ namespace Mimsv2.Controllers
             HttpContext.Session.SetString("email", email);
             HttpContext.Session.SetString("hospitalid", hospitalid);
             HttpContext.Session.SetString("accessLevel", accessLevel);
+            HttpContext.Session.SetString("department", department);
+
 
             var claims = new List<Claim>
 {

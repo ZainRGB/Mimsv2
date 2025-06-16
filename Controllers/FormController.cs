@@ -27,7 +27,9 @@ namespace Mimsv2.Controllers
             model.CapturedBySurname = HttpContext.Session.GetString("surname") ?? "Unknown";
             model.CapturedByTitle = HttpContext.Session.GetString("titles") ?? "Unknown";
             model.CapturedByEmail = HttpContext.Session.GetString("email") ?? "Unknown";
+            model.CapturedbyDpt = HttpContext.Session.GetString("department") ?? "Unknown";
             model.HospitalId = HttpContext.Session.GetString("hospitalid") ?? "0";
+
 
             await PopulateDropdowns(model);
             return View(model);
@@ -407,6 +409,63 @@ private async Task<List<SelectListItem>> GetSubCategories(int level, string pare
 
 
 
+        //SECTION D
+        [HttpGet]
+        public async Task<IActionResult> GetEmp()
+        {
+            var list = new List<SelectListItem>();
+
+            using var conn = new NpgsqlConnection(_configuration.GetConnectionString("DefaultConnection"));
+            await conn.OpenAsync();
+
+            string sql = @"SELECT Distinct dpt FROM tblempcat
+                   WHERE active = 'Y'
+                   ORDER BY dpt";
+
+            using var cmd = new NpgsqlCommand(sql, conn);
+
+
+            using var reader = await cmd.ExecuteReaderAsync();
+            while (await reader.ReadAsync())
+            {
+                string dpt = reader["dpt"].ToString();
+                string fullName = $"{reader["dpt"]}";
+                list.Add(new SelectListItem { Value = dpt, Text = fullName });
+            }
+
+            return Json(list);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetEmpDetails(string dpt)
+        {
+            var list = new List<SelectListItem>();
+
+            using var conn = new NpgsqlConnection(_configuration.GetConnectionString("DefaultConnection"));
+            await conn.OpenAsync();
+
+            string sql = @"SELECT dptcat FROM tblempcat
+                   WHERE dpt = @dpt AND active = 'Y'
+                   ORDER BY dptcat";
+
+            using var cmd = new NpgsqlCommand(sql, conn);
+            cmd.Parameters.AddWithValue("@dpt", dpt);
+
+            using var reader = await cmd.ExecuteReaderAsync();
+            while (await reader.ReadAsync())
+            {
+                string dptcat = reader["dptcat"].ToString();
+                list.Add(new SelectListItem { Value = dptcat, Text = dptcat });
+            }
+
+            return Json(list);
+        }
+
+
+        //SECTION D END
+
+
+
 
 
 
@@ -424,5 +483,227 @@ private async Task<List<SelectListItem>> GetSubCategories(int level, string pare
 
             return RedirectToAction("Success");
         }
+
+
+        //INPUT FORM
+        [HttpPost]
+        public async Task<IActionResult> IncidentFormInput(FormModel model)
+        {
+          //  if (!ModelState.IsValid)
+          //  {
+                // You can reload dropdowns here if needed
+          //      return View(model);
+          //  }
+
+            using var conn = new NpgsqlConnection(_configuration.GetConnectionString("DefaultConnection"));
+            await conn.OpenAsync();
+
+            string sql = @"INSERT INTO tblincident (
+                    affectedward, 
+                    incidentarea, 
+                    incidentcriteria, 
+                    incidentcriteriasub, 
+                    requester,
+                    requesteremail, 
+                    priority, 
+                    titles, 
+                    reportedby, 
+                    invesitgatedby, 
+                    assignedcat, 
+                    assignedstaff, 
+                    incidentdate, 
+                    incidenttime, 
+                    datereported, 
+                    datecaptured, 
+                    summary, 
+                    description, 
+                    timecaptured, 
+                    active, 
+                    status, 
+                    hospitalid, 
+                    qarid, 
+                    username, 
+                    surname, 
+                    onholddescdate, 
+                    onholddesctime, 
+                    closeddesctime, 
+                    onholddesc, 
+                    closeddesc, 
+                    pte, 
+                    ptenumber, 
+                    ptename, 
+                    ptesurname, 
+                    ptetitle, 
+                    reportedbyemail, 
+                    correctaction, 
+                    correctactiontime, 
+                    preventaction, 
+                    preventactiontime, 
+                    preventactiondate, 
+                    correctactiondate, 
+                    investigation, 
+                    summary2, 
+                    medrelatedtotal, 
+                    reportedbydepartment, 
+                    incidentexpires, 
+                    incidentareanight, 
+                    acquired, 
+                    incidenttype, 
+                    inctypescat1, 
+                    inctypescat2
+                   
+                ) VALUES (
+                     @affectedward, 
+                    @incidentarea, 
+                    @incidentcriteria, 
+                    @incidentcriteriasub, 
+                    @requester,  
+                    @requesteremail, 
+                    @priority, 
+                    @titles, 
+                    @reportedby, 
+                    @invesitgatedby, 
+                    @assignedcat, 
+                    @assignedstaff, 
+                    @incidentdate, 
+                    @incidenttime, 
+                    @datereported, 
+                    @datecaptured, 
+                    @summary, 
+                    @description, 
+                    @timecaptured, 
+                    @active, 
+                    @status, 
+                    @hospitalid, 
+                    @qarid, 
+                    @username, 
+                    @surname, 
+                    @onholddescdate, 
+                    @onholddesctime, 
+                    @closeddesctime, 
+                    @onholddesc, 
+                    @closeddesc, 
+                    @pte, 
+                    @ptenumber, 
+                    @ptename, 
+                    @ptesurname, 
+                    @ptetitle, 
+                    @reportedbyemail, 
+                    @correctaction, 
+                    @correctactiontime, 
+                    @preventaction, 
+                    @preventactiontime, 
+                    @preventactiondate, 
+                    @correctactiondate, 
+                    @investigation, 
+                    @summary2, 
+                    @medrelatedtotal, 
+                    @reportedbydepartment, 
+                    @incidentexpires, 
+                    @incidentareanight, 
+                    @acquired, 
+                    @incidenttype, 
+                    @inctypescat1, 
+                    @inctypescat2
+            )
+            RETURNING id;
+               ";
+
+            int insertedId;
+            using var cmd = new NpgsqlCommand(sql, conn);
+
+            cmd.Parameters.AddWithValue("@affectedward", model.affectedward ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@incidentarea", model.incidentarea ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@incidentcriteria", model.incidentcriteria ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@incidentcriteriasub", model.incidentcriteriasub ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@requester", model.CapturedByLoginName ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@requesteremail", model.CapturedByEmail ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@priority", model.priority ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@titles", model.CapturedByTitle ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@reportedby", model.CapturedByLoginName ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@invesitgatedby", model.invesitgatedby ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@assignedcat", model.assignedcat ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@assignedstaff", model.assignedstaff ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@incidentdate", model.incidentdate ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@incidenttime", model.incidenttime ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@datereported", model.datereported ?? (object)DBNull.Value);
+
+            cmd.Parameters.AddWithValue("@datecaptured", model.datecaptured?.Date ?? DateTime.Today);
+
+            cmd.Parameters.AddWithValue("@summary", model.summary ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@description", model.description ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@timecaptured", string.IsNullOrWhiteSpace(model.timecaptured) ? DateTime.Now.ToString("HH:mm") : model.timecaptured);
+
+            cmd.Parameters.AddWithValue("@active", model.active ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@status", model.status ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@hospitalid", model.hospitalid ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@qarid", model.qarid ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@username", model.CapturedByName ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@surname", model.CapturedBySurname ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@onholddescdate", model.onholddescdate ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@closeddescdate", model.closeddescdate ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@onholddesctime", model.onholddesctime ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@closeddesctime", model.closeddesctime ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@onholddesc", model.onholddesc ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@closeddesc", model.closeddesc ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@pte", model.pte ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@ptenumber", model.ptenumber ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@ptename", model.ptename ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@ptesurname", model.ptesurname ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@ptetitle", model.ptetitle ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@reportedbyemail", model.CapturedByEmail ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@correctaction", model.correctaction ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@correctactiontime", model.correctactiontime ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@preventaction", model.preventaction ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@preventactiontime", model.preventactiontime ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@preventactiondate", model.preventactiondate ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@correctactiondate", model.correctactiondate ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@investigation", model.investigation ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@summary2", model.summary2 ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@medrelatedtotal", model.medrelatedtotal ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@reportedbydepartment", model.CapturedbyDpt ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@incidentexpires", DateTime.Now.Date.AddDays(5));
+            cmd.Parameters.AddWithValue("@incidentareanight", model.incidentareanight ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@acquired", model.acquired ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@incidenttype", model.incidenttype ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@inctypescat1", model.inctypescat1 ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@inctypescat2", model.inctypescat2 ?? (object)DBNull.Value);
+            insertedId = Convert.ToInt32(await cmd.ExecuteScalarAsync());
+            //cmd.Parameters.AddWithValue("@incidentarea", model.incidentarea);
+            //cmd.Parameters.AddWithValue("@incidentareanight", model.incidentareanight);
+
+            // Add remaining parameters here...
+
+            //await cmd.ExecuteNonQueryAsync();
+
+            string abbr = "";
+            string abbrSql = "SELECT abbr FROM tblhospitals WHERE hospitalid = @hospitalid";
+            using (var abbrCmd = new NpgsqlCommand(abbrSql, conn))
+            {
+                abbrCmd.Parameters.AddWithValue("@hospitalid", model.hospitalid); // still string
+                abbr = (await abbrCmd.ExecuteScalarAsync())?.ToString() ?? "XX"; // fallback if not found
+            }
+
+            var now = DateTime.Now;
+            string qarid = $"{abbr}/{now.Day}/{now.Month}/{insertedId}";
+
+            string updateSql = "UPDATE tblincident SET qarid = @qarid WHERE id = @id";
+            using (var updateCmd = new NpgsqlCommand(updateSql, conn))
+            {
+                updateCmd.Parameters.AddWithValue("@qarid", qarid);
+                updateCmd.Parameters.AddWithValue("@id", insertedId);
+                await updateCmd.ExecuteNonQueryAsync();
+            }
+
+            // Optional: Redirect or show a success message
+            return RedirectToAction("IncidentFormConfirmation");
+        }
+
+        public IActionResult IncidentFormConfirmation()
+        {
+            return View(); // Create a simple confirmation view if you want
+        }
+
+
     }
 }
