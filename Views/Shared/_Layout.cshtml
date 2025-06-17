@@ -24,7 +24,7 @@
     </div>
 
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3 sticky-top" >
             <div class="container-fluid">
                 <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index"><img src="/images/logotrans.png" class="melo_logo" alt="Logo" /></a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
@@ -229,12 +229,6 @@
                 }
 
 
-
-
-
-
-
-
                 <div class="nav-item">
                     <a asp-controller="Login" asp-action="Users">
                         <div class="tooltip-container group">
@@ -251,7 +245,7 @@
             </div>
             <button class="nav_toggle" id="navToggle">&#9776;</button>
 
-            <main>
+            <main class="flex-grow-1" style="overflow-y: visible;background-color:white;min-height:auto;">
                 @RenderBody()
 
             </main>
@@ -274,7 +268,7 @@
 
         <script>
             let idleTime = 0;
-            const logoutAfter = 10; // minutes
+            const logoutAfter = 60; // minutes
             const warnAt = 1;      // minutes
             let warned = false;
             let countdownInterval;
@@ -290,7 +284,7 @@
                 if (idleTime >= logoutAfter) {
                     window.location.href = '/Login/Logout';
                 }
-            }, 360000); // every minute
+            }, 3600000); // every minute
 
             function resetIdleTime() {
                 // Don't reset if already warned!
@@ -332,7 +326,7 @@
     }
     else
     {
-        <main style="height:100vh;">
+        <main class="flex-grow-1" style="overflow-y: visible;">
 
             @RenderBody()
 
@@ -342,13 +336,15 @@
 
 
 
-
+    <!---
 
     <footer class="border-top footer text-muted">
         <div class="container">
             &copy; 2025 - Mimsv2 - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
+    ---->
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>

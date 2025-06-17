@@ -10,8 +10,10 @@
 html {
   font-size: 14px;
 }
-body{
-    background-color:whitesmoke;
+body {
+    background-color: whitesmoke;
+    min-height: auto;
+    overflow-y: auto;
 }
 
 @media (min-width: 768px) {
@@ -409,6 +411,8 @@ body.shrink .shrink-btn {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     grid-template-rows: auto auto auto auto;
+    border:1px solid lightgrey;
+    border-radius:10px;
 }
 
 .form_grid_item {
@@ -428,6 +432,15 @@ body.shrink .shrink-btn {
     padding: 0.3rem;
     font-size: 0.85rem;
 
+}
+
+.form_grid_item_span3_nc {
+    grid-column: span 3;
+    background-color: whitesmoke;
+    font-size: 0.85rem;
+    background-color: whitesmoke;
+    border-radius: 0px;
+    padding: 0.3rem;
 }
 
 .form_grid_item_span4 {
@@ -469,4 +482,14 @@ label {
     font-size: 0.85rem;
     font-weight: 500;
     color: grey;
+}
+
+.form_radio {
+    display: inline;
+    font-size: 1rem;
+    font-weight: 500;
+    word-spacing: 60px;
+    padding-left: 3px;
+    width:20px;
+    height:20px;
 }

@@ -30,6 +30,7 @@ namespace Mimsv2.Controllers
             model.CapturedbyDpt = HttpContext.Session.GetString("department") ?? "Unknown";
             model.HospitalId = HttpContext.Session.GetString("hospitalid") ?? "0";
 
+            model.AccessLevel = HttpContext.Session.GetString("accessLevel") ?? "User";
 
             await PopulateDropdowns(model);
             return View(model);
@@ -489,129 +490,120 @@ private async Task<List<SelectListItem>> GetSubCategories(int level, string pare
         [HttpPost]
         public async Task<IActionResult> IncidentFormInput(FormModel model)
         {
-          //  if (!ModelState.IsValid)
-          //  {
-                // You can reload dropdowns here if needed
-          //      return View(model);
-          //  }
-
             using var conn = new NpgsqlConnection(_configuration.GetConnectionString("DefaultConnection"));
             await conn.OpenAsync();
 
             string sql = @"INSERT INTO tblincident (
-                    affectedward, 
-                    incidentarea, 
-                    incidentcriteria, 
-                    incidentcriteriasub, 
-                    requester,
-                    requesteremail, 
-                    priority, 
-                    titles, 
-                    reportedby, 
-                    invesitgatedby, 
-                    assignedcat, 
-                    assignedstaff, 
-                    incidentdate, 
-                    incidenttime, 
-                    datereported, 
-                    datecaptured, 
-                    summary, 
-                    description, 
-                    timecaptured, 
-                    active, 
-                    status, 
-                    hospitalid, 
-                    qarid, 
-                    username, 
-                    surname, 
-                    onholddescdate, 
-                    onholddesctime, 
-                    closeddesctime, 
-                    onholddesc, 
-                    closeddesc, 
-                    pte, 
-                    ptenumber, 
-                    ptename, 
-                    ptesurname, 
-                    ptetitle, 
-                    reportedbyemail, 
-                    correctaction, 
-                    correctactiontime, 
-                    preventaction, 
-                    preventactiontime, 
-                    preventactiondate, 
-                    correctactiondate, 
-                    investigation, 
-                    summary2, 
-                    medrelatedtotal, 
-                    reportedbydepartment, 
-                    incidentexpires, 
-                    incidentareanight, 
-                    acquired, 
-                    incidenttype, 
-                    inctypescat1, 
-                    inctypescat2
-                   
-                ) VALUES (
-                     @affectedward, 
-                    @incidentarea, 
-                    @incidentcriteria, 
-                    @incidentcriteriasub, 
-                    @requester,  
-                    @requesteremail, 
-                    @priority, 
-                    @titles, 
-                    @reportedby, 
-                    @invesitgatedby, 
-                    @assignedcat, 
-                    @assignedstaff, 
-                    @incidentdate, 
-                    @incidenttime, 
-                    @datereported, 
-                    @datecaptured, 
-                    @summary, 
-                    @description, 
-                    @timecaptured, 
-                    @active, 
-                    @status, 
-                    @hospitalid, 
-                    @qarid, 
-                    @username, 
-                    @surname, 
-                    @onholddescdate, 
-                    @onholddesctime, 
-                    @closeddesctime, 
-                    @onholddesc, 
-                    @closeddesc, 
-                    @pte, 
-                    @ptenumber, 
-                    @ptename, 
-                    @ptesurname, 
-                    @ptetitle, 
-                    @reportedbyemail, 
-                    @correctaction, 
-                    @correctactiontime, 
-                    @preventaction, 
-                    @preventactiontime, 
-                    @preventactiondate, 
-                    @correctactiondate, 
-                    @investigation, 
-                    @summary2, 
-                    @medrelatedtotal, 
-                    @reportedbydepartment, 
-                    @incidentexpires, 
-                    @incidentareanight, 
-                    @acquired, 
-                    @incidenttype, 
-                    @inctypescat1, 
-                    @inctypescat2
-            )
-            RETURNING id;
-               ";
+            affectedward, 
+            incidentarea, 
+            incidentcriteria, 
+            incidentcriteriasub, 
+            requester,
+            requesteremail, 
+            priority, 
+            titles, 
+            reportedby, 
+            invesitgatedby, 
+            assignedcat, 
+            assignedstaff, 
+            incidentdate, 
+            incidenttime, 
+            datereported, 
+            datecaptured, 
+            summary, 
+            description, 
+            timecaptured, 
+            active, 
+            status, 
+            hospitalid, 
+            qarid, 
+            username, 
+            surname, 
+            onholddescdate, 
+            onholddesctime, 
+            closeddesctime, 
+            onholddesc, 
+            closeddesc, 
+            pte, 
+            ptenumber, 
+            ptename, 
+            ptesurname, 
+            ptetitle, 
+            reportedbyemail, 
+            correctaction, 
+            correctactiontime, 
+            preventaction, 
+            preventactiontime, 
+            preventactiondate, 
+            correctactiondate, 
+            investigation, 
+            summary2, 
+            medrelatedtotal, 
+            reportedbydepartment, 
+            incidentexpires, 
+            incidentareanight, 
+            acquired, 
+            incidenttype, 
+            inctypescat1, 
+            inctypescat2
+        ) VALUES (
+            @affectedward, 
+            @incidentarea, 
+            @incidentcriteria, 
+            @incidentcriteriasub, 
+            @requester,  
+            @requesteremail, 
+            @priority, 
+            @titles, 
+            @reportedby, 
+            @invesitgatedby, 
+            @assignedcat, 
+            @assignedstaff, 
+            @incidentdate, 
+            @incidenttime, 
+            @datereported, 
+            @datecaptured, 
+            @summary, 
+            @description, 
+            @timecaptured, 
+            @active, 
+            @status, 
+            @hospitalid, 
+            @qarid, 
+            @username, 
+            @surname, 
+            @onholddescdate, 
+            @onholddesctime, 
+            @closeddesctime, 
+            @onholddesc, 
+            @closeddesc, 
+            @pte, 
+            @ptenumber, 
+            @ptename, 
+            @ptesurname, 
+            @ptetitle, 
+            @reportedbyemail, 
+            @correctaction, 
+            @correctactiontime, 
+            @preventaction, 
+            @preventactiontime, 
+            @preventactiondate, 
+            @correctactiondate, 
+            @investigation, 
+            @summary2, 
+            @medrelatedtotal, 
+            @reportedbydepartment, 
+            @incidentexpires, 
+            @incidentareanight, 
+            @acquired, 
+            @incidenttype, 
+            @inctypescat1, 
+            @inctypescat2
+        )
+        RETURNING id;";
 
             int insertedId;
             using var cmd = new NpgsqlCommand(sql, conn);
-
             cmd.Parameters.AddWithValue("@affectedward", model.affectedward ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@incidentarea", model.incidentarea ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@incidentcriteria", model.incidentcriteria ?? (object)DBNull.Value);
@@ -627,13 +619,10 @@ private async Task<List<SelectListItem>> GetSubCategories(int level, string pare
             cmd.Parameters.AddWithValue("@incidentdate", model.incidentdate ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@incidenttime", model.incidenttime ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@datereported", model.datereported ?? (object)DBNull.Value);
-
             cmd.Parameters.AddWithValue("@datecaptured", model.datecaptured?.Date ?? DateTime.Today);
-
             cmd.Parameters.AddWithValue("@summary", model.summary ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@description", model.description ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@timecaptured", string.IsNullOrWhiteSpace(model.timecaptured) ? DateTime.Now.ToString("HH:mm") : model.timecaptured);
-
             cmd.Parameters.AddWithValue("@active", model.active ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@status", model.status ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@hospitalid", model.hospitalid ?? (object)DBNull.Value);
@@ -668,24 +657,21 @@ private async Task<List<SelectListItem>> GetSubCategories(int level, string pare
             cmd.Parameters.AddWithValue("@incidenttype", model.incidenttype ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@inctypescat1", model.inctypescat1 ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@inctypescat2", model.inctypescat2 ?? (object)DBNull.Value);
+
             insertedId = Convert.ToInt32(await cmd.ExecuteScalarAsync());
-            //cmd.Parameters.AddWithValue("@incidentarea", model.incidentarea);
-            //cmd.Parameters.AddWithValue("@incidentareanight", model.incidentareanight);
 
-            // Add remaining parameters here...
-
-            //await cmd.ExecuteNonQueryAsync();
-
+            // Build QARID
             string abbr = "";
             string abbrSql = "SELECT abbr FROM tblhospitals WHERE hospitalid = @hospitalid";
             using (var abbrCmd = new NpgsqlCommand(abbrSql, conn))
             {
-                abbrCmd.Parameters.AddWithValue("@hospitalid", model.hospitalid); // still string
-                abbr = (await abbrCmd.ExecuteScalarAsync())?.ToString() ?? "XX"; // fallback if not found
+                abbrCmd.Parameters.AddWithValue("@hospitalid", model.hospitalid);
+                abbr = (await abbrCmd.ExecuteScalarAsync())?.ToString() ?? "XX";
             }
 
             var now = DateTime.Now;
-            string qarid = $"{abbr}/{now.Day}/{now.Month}/{insertedId}";
+            //string qarid = $"{abbr}/{now.Day}/{now.Month}/{insertedId}";
+            string qarid = $"{abbr}-{now.Day}-{now.Month}-{insertedId}";
 
             string updateSql = "UPDATE tblincident SET qarid = @qarid WHERE id = @id";
             using (var updateCmd = new NpgsqlCommand(updateSql, conn))
@@ -695,63 +681,123 @@ private async Task<List<SelectListItem>> GetSubCategories(int level, string pare
                 await updateCmd.ExecuteNonQueryAsync();
             }
 
-
-
-
-
             if (model.UploadedFiles != null && model.UploadedFiles.Any())
             {
                 foreach (var filename in model.UploadedFiles)
                 {
-                     updateSql = @"
-            UPDATE incidentattachments
-            SET qarid = @qarid
-            WHERE attachment = @filename AND (qarid IS NULL OR qarid = '' or qarid = '0')";
-
-                    using var updateCmd = new NpgsqlCommand(updateSql, conn);
-                    updateCmd.Parameters.AddWithValue("@qarid", qarid);
-                    updateCmd.Parameters.AddWithValue("@filename", filename);
-                    await updateCmd.ExecuteNonQueryAsync();
+                    string fileUpdateSql = @"
+                UPDATE incidentattachments
+                SET qarid = @qarid
+                WHERE attachment = @filename AND (qarid IS NULL OR qarid = '' OR qarid = '0')";
+                    using var fileCmd = new NpgsqlCommand(fileUpdateSql, conn);
+                    fileCmd.Parameters.AddWithValue("@qarid", qarid);
+                    fileCmd.Parameters.AddWithValue("@filename", filename);
+                    await fileCmd.ExecuteNonQueryAsync();
                 }
             }
 
-
-
-
-
-
-
-
-
-
-            // Optional: Redirect or show a success message
-            return RedirectToAction("IncidentFormConfirmation");
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+            //  Final redirect to edit mode using qarid
+            //return RedirectToAction("EditIncident", new { id = qarid });
+            return RedirectToAction("EditIncident", "Form", new { id = qarid });
         }
 
-        public IActionResult IncidentFormConfirmation()
+        //INPUT END
+
+        //EDIT INCIDENT
+        [HttpGet]
+        public async Task<IActionResult> EditIncident(string id)
         {
-            return View(); // Create a simple confirmation view if you want
+            if (string.IsNullOrEmpty(id))
+            {
+                return NotFound();
+            }
+
+            var model = new FormModel();
+
+            using var conn = new NpgsqlConnection(_configuration.GetConnectionString("DefaultConnection"));
+            await conn.OpenAsync();
+
+            string sql = @"SELECT * FROM tblincident WHERE qarid = @qarid LIMIT 1";
+            using var cmd = new NpgsqlCommand(sql, conn);
+            cmd.Parameters.AddWithValue("@qarid", id);
+
+            using var reader = await cmd.ExecuteReaderAsync();
+            if (await reader.ReadAsync())
+            {
+                model.qarid = reader["qarid"]?.ToString();
+                model.affectedward = reader["affectedward"]?.ToString();
+                //model.incidentarea = reader["incidentarea"]?.ToString();
+                cmd.Parameters.AddWithValue("@incidentarea", (object)model.incidentcriteria ?? DBNull.Value);
+                model.incidentcriteria = reader["incidentcriteria"]?.ToString();
+                model.incidentcriteriasub = reader["incidentcriteriasub"]?.ToString();
+                model.CapturedByLoginName = reader["requester"]?.ToString();
+                model.CapturedByEmail = reader["requesteremail"]?.ToString();
+                model.priority = reader["priority"]?.ToString();
+                model.CapturedByTitle = reader["titles"]?.ToString();
+                model.invesitgatedby = reader["invesitgatedby"]?.ToString();
+                model.assignedcat = reader["assignedcat"]?.ToString();
+                model.assignedstaff = reader["assignedstaff"]?.ToString();
+                model.incidentdate = reader["incidentdate"] as DateTime?;
+                model.incidenttime = reader["incidenttime"]?.ToString();
+                model.datereported = reader["datereported"] as DateTime?;
+                model.datecaptured = reader["datecaptured"] as DateTime?;
+                model.summary = reader["summary"]?.ToString();
+                model.description = reader["description"]?.ToString();
+                model.timecaptured = reader["timecaptured"]?.ToString();
+                model.active = reader["active"]?.ToString();
+                model.status = reader["status"]?.ToString();
+                model.hospitalid = reader["hospitalid"]?.ToString();
+                model.CapturedByName = reader["username"]?.ToString();
+                model.CapturedBySurname = reader["surname"]?.ToString();
+                model.onholddescdate = reader["onholddescdate"] as DateTime?;
+                model.closeddescdate = reader["closeddescdate"] as DateTime?;
+                model.onholddesctime = reader["onholddesctime"]?.ToString();
+                model.closeddesctime = reader["closeddesctime"]?.ToString();
+                model.onholddesc = reader["onholddesc"]?.ToString();
+                model.closeddesc = reader["closeddesc"]?.ToString();
+                model.pte = reader["pte"]?.ToString();
+                model.ptenumber = reader["ptenumber"]?.ToString();
+                model.ptename = reader["ptename"]?.ToString();
+                model.ptesurname = reader["ptesurname"]?.ToString();
+                model.ptetitle = reader["ptetitle"]?.ToString();
+                model.correctaction = reader["correctaction"]?.ToString();
+                model.correctactiontime = reader["correctactiontime"]?.ToString();
+                model.preventaction = reader["preventaction"]?.ToString();
+                model.preventactiontime = reader["preventactiontime"]?.ToString();
+                model.preventactiondate = reader["preventactiondate"] as DateTime?;
+                model.correctactiondate = reader["correctactiondate"] as DateTime?;
+                model.investigation = reader["investigation"]?.ToString();
+                model.summary2 = reader["summary2"]?.ToString();
+                model.medrelatedtotal = reader["medrelatedtotal"]?.ToString();
+                model.CapturedbyDpt = reader["reportedbydepartment"]?.ToString();
+                //model.incidentareanight = reader["incidentareanight"]?.ToString();
+                cmd.Parameters.AddWithValue("@incidentareanight", (object)model.incidentareanight ?? DBNull.Value);
+                model.acquired = reader["acquired"]?.ToString();
+                model.incidenttype = reader["incidenttype"]?.ToString();
+                model.inctypescat1 = reader["inctypescat1"]?.ToString();
+                model.inctypescat2 = reader["inctypescat2"]?.ToString();
+            }
+            else
+            {
+                return NotFound();
+            }
+
+            /*return View("IncidentFormInput", model);*/ // or a separate edit view if you have one
+            return View("IncidentForm", model);
         }
+
+        //EDIT INCIDENT END
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -916,12 +962,10 @@ private async Task<List<SelectListItem>> GetSubCategories(int level, string pare
 
             return Ok("File deleted.");
         }
-
-
-
-
-
         //ADDENDUMS END
+
+
+ 
 
     }
 }

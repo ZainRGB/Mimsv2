@@ -20,7 +20,15 @@ namespace Mimsv2.Models
 
         public int id { get; set; }
         public string affectedward { get; set; }
-        public string incidentarea { get; set; }
+        //public string incidentarea { get; set; }
+        public bool IsDayShift { get; set; }
+        public string incidentarea
+        {
+            get => IsDayShift ? "Day Shift" : null;
+        }
+
+
+
         public string incidentcriteria { get; set; }
         public string incidentcriteriasub { get; set; }
         public string requester { get; set; }
@@ -89,7 +97,12 @@ namespace Mimsv2.Models
 
         [DataType(DataType.Date)]
         public DateTime? incidentexpires { get; set; } //this must be 7 or 10 days
-        public string incidentareanight { get; set; }
+        //public string incidentareanight { get; set; }
+        public bool IsNightShift { get; set; }
+        public string incidentareanight
+        {
+            get => IsNightShift ? "Night Shift" : null;
+        }
         public string acquired { get; set; }
         public string incidenttype { get; set; }
         public string inctypescat1 { get; set; }
@@ -104,9 +117,9 @@ namespace Mimsv2.Models
         public string CapturedbyDpt { get; set; }
         public string HospitalId { get; set; }
 
+        public string AccessLevel { get; set; }
 
-
-
+        public DateTime? StatusChangedTime { get; set; }
 
     }
 }

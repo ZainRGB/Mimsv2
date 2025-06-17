@@ -3,12 +3,13 @@
     ViewData["Title"] = "Mims Incident Form";
 }
 
+
 <h3>New Incident Form</h3>
 Incident Created, Captured and Reported by @Context.Session.GetString("username") @Context.Session.GetString("surname") (@Context.Session.GetString("titles"))
 <br />
 
 
-<form asp-action="IncidentFormInput" method="post" id="incidentForm">
+<form asp-action="IncidentFormInput" method="post" id="incidentForm" style="min-height:200vh;">
     <input type="hidden" asp-for="CapturedByLoginName" />
     <input type="hidden" asp-for="CapturedByName" />
     <input type="hidden" asp-for="CapturedBySurname" />
@@ -16,7 +17,9 @@ Incident Created, Captured and Reported by @Context.Session.GetString("username"
     <input type="hidden" asp-for="CapturedByEmail" />
     <input type="hidden" asp-for="HospitalId" />
     <input type="hidden" asp-for="CapturedbyDpt" />
+    <input type="hidden" asp-for="CapturedbyDpt" />
     <input type="hidden" asp-for="active" value="Y" />
+    <input type="hidden" asp-for="qarid" />
 
     <!-- Rest of the form goes here -->
     <section class="form_grid">
@@ -81,7 +84,7 @@ Incident Created, Captured and Reported by @Context.Session.GetString("username"
 
 
 
-                <div class="form_grid_item">
+        <div class="form_grid_item">
             <label for="ptenumber">First Name</label><br />
             <input type="text" class="form-control" asp-for="ptename" id="ptenameInput">
         </div>
@@ -111,12 +114,12 @@ Incident Created, Captured and Reported by @Context.Session.GetString("username"
         </div>
 
 
-       <!---ADDENDUM UPLOADS--->
+        <!---ADDENDUM UPLOADS--->
         <div class="form_grid_item_span2" >
             <div id="uploadButtonContainer" style="display:none; margin-top: 10px;">
 
-            
-            <div id="addendumUploadSection" style="margin-top: 10px;">
+
+                <div id="addendumUploadSection" style="margin-top: 10px;">
                     <label for="addendumType">Addendum Type</label>
                     <select class="form-control" id="addendumType" name="addendumType" onchange="toggleOtherInput()">
                         <option value="">Please select</option>
@@ -133,17 +136,17 @@ Incident Created, Captured and Reported by @Context.Session.GetString("username"
 
                     <button type="button" class="btn btn-success mt-2" onclick="uploadAddendumFile()">Upload Addendum</button>
 
-                    
+
                 </div>
-     
-           </div>
+
+            </div>
 
         </div>
 
         <div class="form_grid_item_span2">
             <!--
             <div id="uploadedFilesContainer" style="margin-top: 10px;">
-                 Uploaded files will be shown here
+            Uploaded files will be shown here
             </div> -->
             <div id="uploadedFilesContainer" class="mt-3"></div>
         </div>
@@ -171,16 +174,16 @@ Incident Created, Captured and Reported by @Context.Session.GetString("username"
             </select>
             <span asp-validation-for="priority" class="text-danger"></span>
         </div>
-        
+
         <div class="form_grid_item">
             <label for="incidentdate">Incident Date</label><br />
             <input type="date" class="form-control" asp-for="incidentdate" id="incidentdate">
         </div>
-                <div class="form_grid_item">
+        <div class="form_grid_item">
             <label for="incidenttime">Incident Time</label><br />
             <input type="time" class="form-control" asp-for="incidenttime" id="incidenttime">
         </div>
-       
+
         <div class="form_grid_item">
             <label for="datereported">Incident Date Reported</label><br />
             <input type="date" class="form-control" asp-for="datereported" id="datereported">
@@ -240,15 +243,17 @@ Incident Created, Captured and Reported by @Context.Session.GetString("username"
 
         <div class="form_grid_item">
             <div class="form-check"><br />
-                <input class="form_check" type="checkbox" asp-for="incidentarea" id="incidentarea" value="Day Shift">
-                <label class="form-check-label" for="incidentarea">Day Shift</label>
+
+                <input type="checkbox" asp-for="IsDayShift" class="form_check" id="isDayShift" />
+                <label for="isDayShift">Day Shift</label>
             </div>
         </div>
 
         <div class="form_grid_item">
             <div class="form-check"><br />
-                <input class="form_check" type="checkbox" asp-for="incidentareanight" id="incidentareanight" value="Night Shift" />
-                <label class="form-check-label" for="incidentareanight">Night Shift</label>
+                <input type="checkbox" asp-for="IsNightShift" class="form_check" id="IsNightShift" />
+                <label for="IsNightShift">Night Shift</label>
+
             </div>
         </div>
 
@@ -256,19 +261,160 @@ Incident Created, Captured and Reported by @Context.Session.GetString("username"
         <div class="form_grid_item_span4">Section E: Investigations / Description / Root Causes  </div>
 
 
-        <div class="form_grid_item_span4_nc">
+        <div class="form_grid_item_span2">
             <label>Short Initial Description</label><br>
             <textarea asp-for="description" class="form_textarea"></textarea>
         </div>
-        
-        <div class="form_grid_item_span4_nc">
+
+        <div class="form_grid_item_span2" style="padding-left:20px;font-size:1rem;">
+            <span style="color:orangered;font-weight:300;font-size:0.85rem;">* (No Investigation, Root Cause and Near Root Cause required for Pressure Injuries)</span>
+            <br />
+
+            <table style="width:100%;padding:6px;border-collapse:collapse;">
+
+                <tr>
+                    <td style="width:180px;border-bottom:1px solid lightgrey;">Add Investigation</td>
+                    <td style="width:100px;border-bottom:1px solid lightgrey;">Yes: <input type="radio" name="investcheck" value="Y" onclick="textAreaShow1('inline');" class="form_radio"> </td>
+                    <td style="border-bottom:1px solid lightgrey;">No: <input type="radio" name="investcheck" value="N" onclick="textAreaShow1('none');" class="form_radio" checked></td>
+
+                </tr>
+
+                <tr>
+                    <td style="border-bottom:1px solid lightgrey;">Add Root Cause </td>
+                    <td style="width:100px;border-bottom:1px solid lightgrey;">Yes: <input type="radio" name="rootcheck" value="Y" onclick="textAreaShow2('inline');" class="form_radio"></td>
+                    <td style="border-bottom:1px solid lightgrey;">No: <input type="radio" name="rootcheck" value="N" onclick="textAreaShow2('none');" class="form_radio" checked></td>
+
+                </tr>
+
+                <tr>
+                    <td style="border-bottom:1px solid lightgrey;">Add Near Root Cause </td>
+                    <td style="width:100px;border-bottom:1px solid lightgrey;">Yes: <input type="radio" name="nearrootcheck" value="Y" onclick="textAreaShow3('inline');" class="form_radio"></td>
+                    <td style="border-bottom:1px solid lightgrey;">No: <input type="radio" name="nearrootcheck" value="N" onclick="textAreaShow3('none');" class="form_radio" checked></td>
+
+                </tr>
+            </table>
+        </div>
+
+        <div class="form_grid_item_span4_nc" id="textArea1" style="display:none;">
             <label>
                 Investigation <span style="color:orangered;font-weight:300;font-size:0.85rem;">* (No Investigation, Root Cause and Near Root Cause required for Pressure Injuries)</span>
             </label><br>
             <textarea asp-for="investigation" class="form_textarea"></textarea>
         </div>
 
-                <div class="form_grid_item_span4_nc">
+        <div class="form_grid_item_span4_nc" id="textArea2" style="display:none;">
+            <label>Root Cause</label><br>
+            <textarea asp-for="summary" class="form_textarea"></textarea>
+        </div>
+
+        <div class="form_grid_item_span4_nc" id="textArea3" style="display:none;">
+            <label>Add Near Root Cause</label><br>
+            <textarea asp-for="summary2" class="form_textarea"></textarea>
+        </div>
+
+
+
+        <div class="form_grid_item_span4">Section F: Call to Action </div>
+
+
+        <div class="form_grid_item_span3_nc">
+            <label>Corrective Action</label><br>
+            <textarea asp-for="correctaction" class="form_textarea"></textarea>
+            <br />
+            <label>Preventative Action</label><br>
+            <textarea asp-for="preventaction" class="form_textarea"></textarea>
+        </div>
+
+        <div class="form_grid_item">
+            Status<br />
+
+            @if (Model.AccessLevel == "admin"){
+                <table style="width:100%;padding:6px;height:100%;">
+                    <tr>
+                        <td style="border-bottom:1px solid lightgrey;width:120px;height:30px;">Open</td>
+                        <td style="border-bottom:1px solid lightgrey;height:30px;">
+                            <input type="radio" name="status" value="open" class="form_radio" onclick="textAreaShow5('none');textAreaShow4('none');" checked>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td style="border-bottom:1px solid lightgrey;height:30px;">On Hold</td>
+                        <td style="border-bottom:1px solid lightgrey;height:30px;"><input type="radio" name="status" value="hold" onclick="textAreaShow4('inline');textAreaShow5('none');" class="form_radio"></td>
+                    </tr>
+
+                    <tr>
+                        <td style="border-bottom:1px solid lightgrey;height:30px;">Close</td>
+                        <td style="border-bottom:1px solid lightgrey;height:30px;"><input type="radio" name="status" value="closed" onclick="textAreaShow5('inline');textAreaShow4('none');" class="form_radio"></td>
+                    </tr>
+
+                    <tr>
+                        <td colspan="2" style="vertical-align:bottom;padding-bottom:30px;text-align:right;"><button class="btn btn-danger">Delete this Incident</button></td>
+                    </tr>
+
+                </table>
+            }
+            else
+            {
+                <table style="width:100%;padding:6px;height:100%;">
+                    <tr>
+                        <td style="border-bottom:1px solid lightgrey;width:120px;height:30px;">Open</td>
+                        <td style="border-bottom:1px solid lightgrey;height:30px;">
+                            <input type="radio" name="status" value="open" class="form_radio" onclick="textAreaShow4('none');" checked>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td style="border-bottom:1px solid lightgrey;height:30px;">On Hold</td>
+                        <td style="border-bottom:1px solid lightgrey;height:30px;"><input type="radio" name="status" value="hold" onclick="textAreaShow4('inline');" class="form_radio"></td>
+                    </tr>
+
+                    <tr>
+                        <td colspan="2" style="vertical-align:bottom;padding-bottom:30px;text-align:right;">QA or IPC may close off an Incident</td>
+                    </tr>
+
+                </table>
+                
+            }
+        </div>
+
+        <div class="form_grid_item_span3_nc">
+            <div class="form_grid_item_span4_nc" id="textArea4" style="display:none;">
+                <label>Brief Description as to why the Incident is being put on hold.</label><br>
+                <textarea asp-for="onholddesc" class="form_textarea"></textarea>
+                <input type="hidden" asp-for="onholddescdate" value="@DateTime.Now.ToString("yyyy-MM-dd")" />
+                <input type="text" asp-for="onholddesctime" value="@DateTime.Now.ToString("HH:mm")"  />
+            </div>
+        </div>
+
+        <div class="grid_item"></div>
+
+        <div class="form_grid_item_span3_nc">
+            <div class="form_grid_item_span4_nc" id="textArea5" style="display:none;">
+                <label>Closing Description.</label><br>
+                <textarea asp-for="closeddesc" class="form_textarea"></textarea>
+                <input type="hidden" asp-for="closeddescdate" value="@DateTime.Now.ToString("yyyy-MM-dd")" />
+                <input type="text" asp-for="closeddesctime" value="@DateTime.Now.ToString("HH:mm")" />
+            </div>
+        </div>
+
+        <div class="grid_item"></div>
+
+
+
+        <div class="form_grid_item_span4_nc">
+            @if (Model.AccessLevel == "admin")
+            {
+                <div class="alert alert-success">Welcome Admin! Full access granted.</div>
+
+            }
+            else
+            {
+                <p class="text-muted">Standard access - admin sections are hidden.</p>
+            }
+        </div>
+
+        <!---
+            <div class="form_grid_item_span4_nc">
             <label>Root Cause</label><br>
             <textarea asp-for="summary" class="form_textarea"></textarea>
         </div>
@@ -277,14 +423,44 @@ Incident Created, Captured and Reported by @Context.Session.GetString("username"
             <label>Near Root Cause</label><br>
             <textarea asp-for="summary2" class="form_textarea"></textarea>
         </div>
+        --->
 
 
-        <br />
-    
+        <script>
+            function textAreaShow1(onOff) {
+            document.getElementById('textArea1').style.display = onOff;
+            }
+
+            function textAreaShow2(onOff) {
+            document.getElementById('textArea2').style.display = onOff;
+            }
+
+            function textAreaShow3(onOff) {
+            document.getElementById('textArea3').style.display = onOff;
+            }
+
+            function textAreaShow4(onOff) {
+            document.getElementById('textArea4').style.display = onOff;
+            }
+
+            function textAreaShow5(onOff) {
+            document.getElementById('textArea5').style.display = onOff;
+            }
+        </script>
+
+      
+        <div class="form_grid_item_span4_nc">
+
+			<button type="submit" class="btn btn-primary mt-4">Submit Incident</button>
+        </div>
 
     </section>
-    <button type="submit" class="btn btn-primary mt-4">Submit Incident</button>
+   
 </form>
+
+
+
+
 
 @* <!---SECTION A---> *@
 @section Scripts {
@@ -474,12 +650,6 @@ Incident Created, Captured and Reported by @Context.Session.GetString("username"
             }
         }
 
-
-        
-
-
-
-
                 loadSubCategory(1, cat, 'subcat1');
                 $('#subcat2').html('<option value="">No Category</option>');
                 $('#subcat3').html('<option value="">No Category</option>');
@@ -515,11 +685,6 @@ Incident Created, Captured and Reported by @Context.Session.GetString("username"
                 loadSubCategory(3, selectedSub2, 'subcat3', selectedSub3);
             }
 
-
-
-
-
-
         if (!selectedCat || selectedCat === 'No Category') {
             $('#ptenumberInput').val('').prop('disabled', true);
             $('#ptenameInput').val('').prop('disabled', true);
@@ -548,12 +713,6 @@ Incident Created, Captured and Reported by @Context.Session.GetString("username"
                 $('#ptenumberLabel').text("No Incident Selected");
             }
         }
-
-
-
-
-
-
         });
     </script>
 
@@ -622,8 +781,9 @@ Incident Created, Captured and Reported by @Context.Session.GetString("username"
             });
         });
     </script>
-@* 
-    SECTION D *@
+
+
+@* SECTION D *@
 
     <script>
         document.addEventListener("DOMContentLoaded", function () {
@@ -773,7 +933,6 @@ Incident Created, Captured and Reported by @Context.Session.GetString("username"
                     <div style="margin-bottom: 5px;">
                         <strong>${addendumType}</strong> -
                         (Criteria: ${criteria})
-                        <em>File:</em> ${data.foldername}
                         <button type="button" class="btn btn-sm btn-danger ms-2" onclick="deleteAddendum('${data.attachment}')">Delete</button>
                         <span style="color:green;">Uploaded</span>
                     </div>
