@@ -14,6 +14,8 @@ namespace Mimsv2.Models
         public List<SelectListItem> IncidentSubCat2 { get; set; } = new();
         public List<SelectListItem> IncidentSubCat3 { get; set; } = new();
 
+        public List<string> UploadedFiles { get; set; } = new List<string>();
+
 
 
         public int id { get; set; }

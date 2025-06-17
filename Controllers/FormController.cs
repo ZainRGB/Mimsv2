@@ -695,8 +695,57 @@ private async Task<List<SelectListItem>> GetSubCategories(int level, string pare
                 await updateCmd.ExecuteNonQueryAsync();
             }
 
+
+
+
+
+            if (model.UploadedFiles != null && model.UploadedFiles.Any())
+            {
+                foreach (var filename in model.UploadedFiles)
+                {
+                     updateSql = @"
+            UPDATE incidentattachments
+            SET qarid = @qarid
+            WHERE attachment = @filename AND (qarid IS NULL OR qarid = '' or qarid = '0')";
+
+                    using var updateCmd = new NpgsqlCommand(updateSql, conn);
+                    updateCmd.Parameters.AddWithValue("@qarid", qarid);
+                    updateCmd.Parameters.AddWithValue("@filename", filename);
+                    await updateCmd.ExecuteNonQueryAsync();
+                }
+            }
+
+
+
+
+
+
+
+
+
+
             // Optional: Redirect or show a success message
             return RedirectToAction("IncidentFormConfirmation");
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         }
 
         public IActionResult IncidentFormConfirmation()
@@ -704,6 +753,175 @@ private async Task<List<SelectListItem>> GetSubCategories(int level, string pare
             return View(); // Create a simple confirmation view if you want
         }
 
+
+
+        //ADDENDUMS
+        //[HttpPost]
+        //public async Task<IActionResult> UploadAddendum(int qarid, string addendumType, string? otherAddendum, IFormFile addendumFile, string inctypescat2)
+        //{
+        //    if (addendumFile == null || addendumFile.Length == 0)
+        //        return BadRequest("No file uploaded.");
+
+        //    var addendumName = addendumType == "Other" ? otherAddendum : addendumType;
+
+        //    using var ms = new MemoryStream();
+        //    await addendumFile.CopyToAsync(ms);
+        //    var fileBytes = ms.ToArray();
+
+        //    using var conn = new NpgsqlConnection(_configuration.GetConnectionString("DefaultConnection"));
+        //    await conn.OpenAsync();
+
+        //    var cmd = new NpgsqlCommand(@"
+        //INSERT INTO incidentattachments 
+        //(attchatime, attachment, active, qarid, attachdate, addendums, criteria) 
+        //VALUES (CURRENT_TIME, @attachment, 'Y', @qarid, CURRENT_DATE, @addendums, @criteria)", conn);
+
+        //    cmd.Parameters.AddWithValue("attachment", fileBytes);
+        //    cmd.Parameters.AddWithValue("qarid", qarid);
+        //    cmd.Parameters.AddWithValue("addendums", addendumName ?? "");
+        //    cmd.Parameters.AddWithValue("criteria", inctypescat2 ?? "");
+
+        //    await cmd.ExecuteNonQueryAsync();
+
+        //    TempData["UploadSuccess"] = "Addendum uploaded successfully.";
+        //    return RedirectToAction("IncidentForm"); // adjust if needed
+        //}
+
+
+
+
+        [HttpPost]
+        public async Task<IActionResult> UploadAddendum(IFormFile addendumFile, string addendumType, string criteria)
+        {
+            try
+            {
+                if (addendumFile == null || addendumFile.Length == 0 || string.IsNullOrEmpty(addendumType) || string.IsNullOrEmpty(criteria))
+                {
+                    return BadRequest("Missing file or required metadata.");
+                }
+
+                var uploadPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
+                if (!Directory.Exists(uploadPath))
+                {
+                    Directory.CreateDirectory(uploadPath);
+                }
+
+                var uniqueFileName = $"{Guid.NewGuid()}_{Path.GetFileName(addendumFile.FileName)}";
+                var filePath = Path.Combine(uploadPath, uniqueFileName);
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await addendumFile.CopyToAsync(stream);
+                }
+
+                using var conn = new NpgsqlConnection(_configuration.GetConnectionString("DefaultConnection"));
+                await conn.OpenAsync();
+
+                string insertSql = @"
+            INSERT INTO incidentattachments 
+            (attachtime, attachment, active, qarid, attachdate,foldername, addendums, criteria)
+            VALUES (@attchatime, @attachment, 'Y', @qarid, @attachdate,@foldername, @addendums, @criteria)";
+
+                using var cmd = new NpgsqlCommand(insertSql, conn);
+                cmd.Parameters.AddWithValue("attchatime", DateTime.Now);
+                cmd.Parameters.AddWithValue("attachment", uniqueFileName);
+                cmd.Parameters.AddWithValue("qarid", 0); // temp ID
+                cmd.Parameters.AddWithValue("attachdate", DateTime.Today);
+                cmd.Parameters.AddWithValue("addendums", addendumType);
+                cmd.Parameters.AddWithValue("criteria", criteria);
+                cmd.Parameters.AddWithValue("foldername", Path.GetFileName(addendumFile.FileName));
+
+                await cmd.ExecuteNonQueryAsync();
+
+                return Ok(new
+                {
+                    message = "File uploaded successfully.",
+                    attachment = uniqueFileName,
+                   
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+
+        //[HttpDelete]
+        //public async Task<IActionResult> DeleteAddendum(string fileName)
+        //{
+        //    if (string.IsNullOrWhiteSpace(fileName))
+        //        return BadRequest("Invalid filename.");
+
+        //    using var conn = new NpgsqlConnection(_configuration.GetConnectionString("DefaultConnection"));
+        //    await conn.OpenAsync();
+
+        //    // First, find the record
+        //    string selectSql = "SELECT id, attachment FROM incidentattachments WHERE foldername = @foldername AND active = 'Y' LIMIT 1";
+        //    int id = 0;
+        //    string savedFileName = "";
+
+        //    using (var cmd = new NpgsqlCommand(selectSql, conn))
+        //    {
+        //        cmd.Parameters.AddWithValue("foldername", fileName);
+        //        using var reader = await cmd.ExecuteReaderAsync();
+        //        if (await reader.ReadAsync())
+        //        {
+        //            id = reader.GetInt32(0);
+        //            savedFileName = reader.GetString(1);
+        //        }
+        //        else
+        //        {
+        //            return NotFound("File not found in database.");
+        //        }
+        //    }
+
+        //    // Soft delete from DB
+        //    string updateSql = "UPDATE incidentattachments SET active = 'N' WHERE id = @id";
+        //    using (var cmd = new NpgsqlCommand(updateSql, conn))
+        //    {
+        //        cmd.Parameters.AddWithValue("id", id);
+        //        await cmd.ExecuteNonQueryAsync();
+        //    }
+
+        //    // Delete from disk
+        //    var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", savedFileName);
+        //    if (System.IO.File.Exists(filePath))
+        //    {
+        //        System.IO.File.Delete(filePath);
+        //    }
+
+        //    return Ok("Addendum deleted successfully.");
+        //}
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteAddendum([FromForm] string attachment)
+        {
+            if (string.IsNullOrWhiteSpace(attachment))
+                return BadRequest("Missing attachment filename.");
+
+            using var conn = new NpgsqlConnection(_configuration.GetConnectionString("DefaultConnection"));
+            await conn.OpenAsync();
+
+            string sql = @"UPDATE incidentattachments 
+                   SET active = 'N' 
+                   WHERE attachment = @attachment";
+
+            using var cmd = new NpgsqlCommand(sql, conn);
+            cmd.Parameters.AddWithValue("attachment", attachment);
+            var rows = await cmd.ExecuteNonQueryAsync();
+
+            if (rows == 0)
+                return NotFound("No matching record found.");
+
+            return Ok("File deleted.");
+        }
+
+
+
+
+
+        //ADDENDUMS END
 
     }
 }
