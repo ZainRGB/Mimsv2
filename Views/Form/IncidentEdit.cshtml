@@ -9,7 +9,7 @@ Incident Created, Captured and Reported by @Context.Session.GetString("username"
 <br />
 
 
-<form asp-action="IncidentFormInput" method="post" id="incidentForm" style="min-height:200vh;">
+<form asp-action="EditIncident" method="post" id="incidentForm" style="min-height:200vh;">
     <input type="hidden" asp-for="CapturedByLoginName" />
     <input type="hidden" asp-for="CapturedByName" />
     <input type="hidden" asp-for="CapturedBySurname" />
@@ -21,79 +21,57 @@ Incident Created, Captured and Reported by @Context.Session.GetString("username"
     <input type="hidden" asp-for="active" value="Y" />
     <input type="hidden" asp-for="qarid" />
 
-    <!-- Rest of the form goes here -->
     <section class="form_grid">
-        <!-- SECTION A -->
         <div class="form_grid_item_span4">Section A: Incident Details</div>
-
         <div class="form_grid_item_span2">
             <label for="hospitalid">Hospital</label>
             <select class="form-control" asp-for="hospitalid" asp-items="Model.Hospitals" id="hospitalid">
                 <option value="">Please Select</option>
             </select>
-            <span asp-validation-for="hospitalid" class="text-danger"></span>
         </div>
-
         <div class="form_grid_item_span2">
             <label for="affectedward">Affected Ward</label>
             <select class="form-control" asp-for="affectedward" asp-items="Model.Departments" id="affectedward" disabled>
                 <option value="">Please Select</option>
             </select>
-            <span asp-validation-for="affectedward" class="text-danger"></span>
         </div>
-        <!-- SECTION A -->
-
-
-        <!-- SECTION B -->
         <div class="form_grid_item_span4">Section B: Person Involved</div>
-
         <div class="form_grid_item">
             <label for="inctypescat1">Type of Incident</label>
             <select class="form-control" asp-for="inctypescat1" id="cat">
                 <option value="">No Category</option>
             </select>
         </div>
-
         <div class="form_grid_item">
             <label for="inctypescat2">Incident</label>
             <select class="form-control" asp-for="inctypescat2" id="subcat1" disabled>
                 <option value="">Please select</option>
             </select>
         </div>
-
         <div class="form_grid_item">
             <label for="inctypescat3">Category</label>
             <select class="form-control" asp-for="inctypescat3" id="subcat2" disabled>
                 <option value="">Please select</option>
             </select>
         </div>
-
         <div class="form_grid_item">
             <label for="inctypescat4">Sub Category</label>
             <select class="form-control" asp-for="inctypescat4" id="subcat3" disabled>
                 <option value="">Please select</option>
             </select>
         </div>
-
-
-
         <div class="form_grid_item">
             <label for="ptenumber" id="ptenumberLabel">No Incident Selected</label><br />
             <input type="text" class="form-control" asp-for="ptenumber" id="ptenumberInput">
         </div>
-
-
-
         <div class="form_grid_item">
             <label for="ptenumber">First Name</label><br />
             <input type="text" class="form-control" asp-for="ptename" id="ptenameInput">
         </div>
-
         <div class="form_grid_item">
             <label for="ptesurname">Surname</label><br />
             <input type="text" class="form-control" asp-for="ptesurname" id="ptesurnameInput">
         </div>
-
         <div class="form_grid_item">
             <label for="ptetitle">Title</label>
             <select class="form-control" asp-for="ptetitle" id="ptetitleInput">
@@ -112,13 +90,8 @@ Incident Created, Captured and Reported by @Context.Session.GetString("username"
                 <option>Other</option>
             </select>
         </div>
-
-
-        <!---ADDENDUM UPLOADS--->
-        <div class="form_grid_item_span2" >
+        <div class="form_grid_item_span2">
             <div id="uploadButtonContainer" style="display:none; margin-top: 10px;">
-
-
                 <div id="addendumUploadSection" style="margin-top: 10px;">
                     <label for="addendumType">Addendum Type</label>
                     <select class="form-control" id="addendumType" name="addendumType" onchange="toggleOtherInput()">
@@ -129,40 +102,17 @@ Incident Created, Captured and Reported by @Context.Session.GetString("username"
                         <option value="Vital sign chart">4. Vital sign chart</option>
                         <option value="Other">5. Other</option>
                     </select>
-
                     <input type="text" id="otherAddendumText" name="otherAddendum" style="display:none; margin-top:10px;" class="form-control" placeholder="Please specify" />
-
                     <input type="file" id="uploadAddendum" name="addendumFile" class="form-control mt-2" />
-
                     <button type="button" class="btn btn-success mt-2" onclick="uploadAddendumFile()">Upload Addendum</button>
-
-
                 </div>
-
             </div>
-
         </div>
-
         <div class="form_grid_item_span2">
-            <!--
-            <div id="uploadedFilesContainer" style="margin-top: 10px;">
-            Uploaded files will be shown here
-            </div> -->
             <div id="uploadedFilesContainer" class="mt-3"></div>
         </div>
-        <!---ADDENDUM UPLOADS--->
-
-
-        <!-- SECTION B END -->
-
-
-
-
-        <!-- SECTION C -->
-
-
+        
         <div class="form_grid_item_span4">Section C: When It Occurred and Investigated By.</div>
-
         <div class="form_grid_item">
             <label for="priority">Severity</label>
             <select class="form-control" asp-for="priority" id="priority">
@@ -172,9 +122,7 @@ Incident Created, Captured and Reported by @Context.Session.GetString("username"
                 <option value="Moderate">Moderate</option>
                 <option value="Major">Major</option>
             </select>
-            <span asp-validation-for="priority" class="text-danger"></span>
         </div>
-
         <div class="form_grid_item">
             <label for="incidentdate">Incident Date</label><br />
             <input type="date" class="form-control" asp-for="incidentdate" id="incidentdate">
@@ -183,105 +131,81 @@ Incident Created, Captured and Reported by @Context.Session.GetString("username"
             <label for="incidenttime">Incident Time</label><br />
             <input type="time" class="form-control" asp-for="incidenttime" id="incidenttime">
         </div>
-
         <div class="form_grid_item">
             <label for="datereported">Incident Date Reported</label><br />
             <input type="date" class="form-control" asp-for="datereported" id="datereported">
         </div>
-
-
-
+        
         <div class="form_grid_item">
             <label for="invesitgatedby">Investigated By</label>
-            <select class="form-control" asp-for="invesitgatedby" id="invesitgatedby" disabled>
+            <select class="form-control" asp-for="invesitgatedby" id="invesitgatedby" >
                 <option value="">Please Select</option>
             </select>
-            <span asp-validation-for="invesitgatedby" class="text-danger"></span>
         </div>
-
         <div class="form_grid_item">
             <label for="Name">Name</label><br />
             <input type="text" class="form-control" id="Name" readonly>
         </div>
-
         <div class="form_grid_item">
             <label for="Surname">Surname</label><br />
             <input type="text" class="form-control" id="Surname" readonly>
         </div>
-
         <div class="form_grid_item">
             <label for="Email">Email</label><br />
             <input type="text" class="form-control" id="Email" readonly>
         </div>
-
-
-
-        <!-- SECTION D -->
-
-
+        
+        
         <div class="form_grid_item_span4">Section D: Describe the Incident </div>
-
         <div class="form_grid_item">
             <label for="dptSelect">Staff Department</label>
             <select class="form-control" asp-for="assignedcat" id="dptSelect">
                 <option value="">Please Select</option>
             </select>
-            <span asp-validation-for="assignedcat" class="text-danger"></span>
         </div>
-
         <div class="form_grid_item">
             <label for="dptDetails">Staff Category</label>
             <select class="form-control" asp-for="assignedstaff" id="dptDetails">
                 <option value="">Please Select</option>
             </select>
-            <span asp-validation-for="assignedstaff" class="text-danger"></span>
         </div>
-
         <div class="form_grid_item">
-            <div class="form-check"><br />
+            <div class="form-check">
+                <br />
 
                 <input type="checkbox" asp-for="IsDayShift" class="form_check" id="isDayShift" />
                 <label for="isDayShift">Day Shift</label>
             </div>
         </div>
-
         <div class="form_grid_item">
-            <div class="form-check"><br />
+            <div class="form-check">
+                <br />
                 <input type="checkbox" asp-for="IsNightShift" class="form_check" id="IsNightShift" />
                 <label for="IsNightShift">Night Shift</label>
 
             </div>
         </div>
-
-
         <div class="form_grid_item_span4">Section E: Investigations / Description / Root Causes  </div>
-
-
         <div class="form_grid_item_span2">
             <label>Short Initial Description</label><br>
             <textarea asp-for="description" class="form_textarea"></textarea>
         </div>
-
         <div class="form_grid_item_span2" style="padding-left:20px;font-size:1rem;">
             <span style="color:orangered;font-weight:300;font-size:0.85rem;">* (No Investigation, Root Cause and Near Root Cause required for Pressure Injuries)</span>
             <br />
-
             <table style="width:100%;padding:6px;border-collapse:collapse;">
-
                 <tr>
                     <td style="width:180px;border-bottom:1px solid lightgrey;">Add Investigation</td>
                     <td style="width:100px;border-bottom:1px solid lightgrey;">Yes: <input type="radio" name="investcheck" value="Y" onclick="textAreaShow1('inline');" class="form_radio"> </td>
                     <td style="border-bottom:1px solid lightgrey;">No: <input type="radio" name="investcheck" value="N" onclick="textAreaShow1('none');" class="form_radio" checked></td>
 
                 </tr>
-
                 <tr>
                     <td style="border-bottom:1px solid lightgrey;">Add Root Cause </td>
                     <td style="width:100px;border-bottom:1px solid lightgrey;">Yes: <input type="radio" name="rootcheck" value="Y" onclick="textAreaShow2('inline');" class="form_radio"></td>
                     <td style="border-bottom:1px solid lightgrey;">No: <input type="radio" name="rootcheck" value="N" onclick="textAreaShow2('none');" class="form_radio" checked></td>
 
                 </tr>
-
                 <tr>
                     <td style="border-bottom:1px solid lightgrey;">Add Near Root Cause </td>
                     <td style="width:100px;border-bottom:1px solid lightgrey;">Yes: <input type="radio" name="nearrootcheck" value="Y" onclick="textAreaShow3('inline');" class="form_radio"></td>
@@ -290,29 +214,21 @@ Incident Created, Captured and Reported by @Context.Session.GetString("username"
                 </tr>
             </table>
         </div>
-
         <div class="form_grid_item_span4_nc" id="textArea1" style="display:none;">
             <label>
                 Investigation <span style="color:orangered;font-weight:300;font-size:0.85rem;">* (No Investigation, Root Cause and Near Root Cause required for Pressure Injuries)</span>
             </label><br>
             <textarea asp-for="investigation" class="form_textarea"></textarea>
         </div>
-
         <div class="form_grid_item_span4_nc" id="textArea2" style="display:none;">
             <label>Root Cause</label><br>
             <textarea asp-for="summary" class="form_textarea"></textarea>
         </div>
-
         <div class="form_grid_item_span4_nc" id="textArea3" style="display:none;">
             <label>Add Near Root Cause</label><br>
             <textarea asp-for="summary2" class="form_textarea"></textarea>
         </div>
-
-
-
         <div class="form_grid_item_span4">Section F: Call to Action </div>
-
-
         <div class="form_grid_item_span3_nc">
             <label>Corrective Action</label><br>
             <textarea asp-for="correctaction" class="form_textarea"></textarea>
@@ -320,11 +236,10 @@ Incident Created, Captured and Reported by @Context.Session.GetString("username"
             <label>Preventative Action</label><br>
             <textarea asp-for="preventaction" class="form_textarea"></textarea>
         </div>
-
         <div class="form_grid_item">
             Status<br />
-
-            @if (Model.AccessLevel == "admin"){
+            @if (Model.AccessLevel == "admin")
+            {
                 <table style="width:100%;padding:6px;height:100%;">
                     <tr>
                         <td style="border-bottom:1px solid lightgrey;width:120px;height:30px;">Open</td>
@@ -332,21 +247,17 @@ Incident Created, Captured and Reported by @Context.Session.GetString("username"
                             <input type="radio" name="status" value="open" class="form_radio" onclick="textAreaShow5('none');textAreaShow4('none');" checked>
                         </td>
                     </tr>
-
                     <tr>
                         <td style="border-bottom:1px solid lightgrey;height:30px;">On Hold</td>
                         <td style="border-bottom:1px solid lightgrey;height:30px;"><input type="radio" name="status" value="hold" onclick="textAreaShow4('inline');textAreaShow5('none');" class="form_radio"></td>
                     </tr>
-
                     <tr>
                         <td style="border-bottom:1px solid lightgrey;height:30px;">Close</td>
                         <td style="border-bottom:1px solid lightgrey;height:30px;"><input type="radio" name="status" value="closed" onclick="textAreaShow5('inline');textAreaShow4('none');" class="form_radio"></td>
                     </tr>
-
                     <tr>
                         <td colspan="2" style="vertical-align:bottom;padding-bottom:30px;text-align:right;"><button class="btn btn-danger">Delete this Incident</button></td>
                     </tr>
-
                 </table>
             }
             else
@@ -358,32 +269,25 @@ Incident Created, Captured and Reported by @Context.Session.GetString("username"
                             <input type="radio" name="status" value="open" class="form_radio" onclick="textAreaShow4('none');" checked>
                         </td>
                     </tr>
-
                     <tr>
                         <td style="border-bottom:1px solid lightgrey;height:30px;">On Hold</td>
                         <td style="border-bottom:1px solid lightgrey;height:30px;"><input type="radio" name="status" value="hold" onclick="textAreaShow4('inline');" class="form_radio"></td>
                     </tr>
-
                     <tr>
                         <td colspan="2" style="vertical-align:bottom;padding-bottom:30px;text-align:right;">QA or IPC may close off an Incident</td>
                     </tr>
-
                 </table>
-                
             }
         </div>
-
         <div class="form_grid_item_span3_nc">
             <div class="form_grid_item_span4_nc" id="textArea4" style="display:none;">
                 <label>Brief Description as to why the Incident is being put on hold.</label><br>
                 <textarea asp-for="onholddesc" class="form_textarea"></textarea>
                 <input type="hidden" asp-for="onholddescdate" value="@DateTime.Now.ToString("yyyy-MM-dd")" />
-                <input type="text" asp-for="onholddesctime" value="@DateTime.Now.ToString("HH:mm")"  />
+                <input type="text" asp-for="onholddesctime" value="@DateTime.Now.ToString("HH:mm")" />
             </div>
         </div>
-
         <div class="grid_item"></div>
-
         <div class="form_grid_item_span3_nc">
             <div class="form_grid_item_span4_nc" id="textArea5" style="display:none;">
                 <label>Closing Description.</label><br>
@@ -392,11 +296,7 @@ Incident Created, Captured and Reported by @Context.Session.GetString("username"
                 <input type="text" asp-for="closeddesctime" value="@DateTime.Now.ToString("HH:mm")" />
             </div>
         </div>
-
         <div class="grid_item"></div>
-
-
-
         <div class="form_grid_item_span4_nc">
             @if (Model.AccessLevel == "admin")
             {
@@ -408,20 +308,6 @@ Incident Created, Captured and Reported by @Context.Session.GetString("username"
                 <p class="text-muted">Standard access - admin sections are hidden.</p>
             }
         </div>
-
-        <!---
-            <div class="form_grid_item_span4_nc">
-            <label>Root Cause</label><br>
-            <textarea asp-for="summary" class="form_textarea"></textarea>
-        </div>
-
-        <div class="form_grid_item_span4_nc">
-            <label>Near Root Cause</label><br>
-            <textarea asp-for="summary2" class="form_textarea"></textarea>
-        </div>
-        --->
-
-
         <script>
             function textAreaShow1(onOff) {
             document.getElementById('textArea1').style.display = onOff;
@@ -443,15 +329,10 @@ Incident Created, Captured and Reported by @Context.Session.GetString("username"
             document.getElementById('textArea5').style.display = onOff;
             }
         </script>
-
-      
         <div class="form_grid_item_span4_nc">
-
-			<button type="submit" class="btn btn-primary mt-4">Submit Incident</button>
-        </div>
-
+            <button type="submit" class="btn btn-primary mt-4">Update Incident</button>
+       </div>
     </section>
-   
 </form>
 
 
@@ -461,105 +342,105 @@ Incident Created, Captured and Reported by @Context.Session.GetString("username"
 @* <!---SECTION A---> *@
 @section Scripts {
 
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        const hospitalSelect = document.getElementById("hospitalid");
-        const wardSelect = document.getElementById("affectedward");
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const hospitalSelect = document.getElementById("hospitalid");
+            const wardSelect = document.getElementById("affectedward");
 
-        hospitalSelect.addEventListener("change", function () {
-            const hospitalId = this.value;
+            hospitalSelect.addEventListener("change", function () {
+                const hospitalId = this.value;
 
-            if (hospitalId) {
-                wardSelect.disabled = false;
-                wardSelect.innerHTML = '<option value="">Please Select</option>';
+                if (hospitalId) {
+                    wardSelect.disabled = false;
+                    wardSelect.innerHTML = '<option value="">Please Select</option>';
 
-                fetch(`/Form/GetDepartmentsByHospital?hospitalId=${hospitalId}`)
-                    .then(res => res.json())
-                    .then(data => {
-                        data.forEach(dept => {
-                            const opt = document.createElement("option");
-                            opt.value = dept.value;
-                            opt.text = dept.text;
-                            wardSelect.appendChild(opt);
+                    fetch(`/Form/GetDepartmentsByHospital?hospitalId=${hospitalId}`)
+                        .then(res => res.json())
+                        .then(data => {
+                            data.forEach(dept => {
+                                const opt = document.createElement("option");
+                                opt.value = dept.value;
+                                opt.text = dept.text;
+                                wardSelect.appendChild(opt);
+                            });
+                        })
+                        .catch(err => {
+                            console.error("Failed to load departments", err);
                         });
-                    })
-                    .catch(err => {
-                        console.error("Failed to load departments", err);
-                    });
-            } else {
-                wardSelect.disabled = true;
-                wardSelect.innerHTML = '<option value="">Please Select</option>';
-            }
+                } else {
+                    wardSelect.disabled = true;
+                    wardSelect.innerHTML = '<option value="">Please Select</option>';
+                }
+            });
         });
-    });
-</script>
+    </script>
 
-@* <!---SECTION B---> *@
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        const cat = document.getElementById("cat");
-        const sub1 = document.getElementById("subcat1");
-        const sub2 = document.getElementById("subcat2");
-        const sub3 = document.getElementById("subcat3");
+    @* <!---SECTION B---> *@
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const cat = document.getElementById("cat");
+            const sub1 = document.getElementById("subcat1");
+            const sub2 = document.getElementById("subcat2");
+            const sub3 = document.getElementById("subcat3");
 
-        // Load Categories
-        fetch("/Form/GetIncidentCategories")
-            .then(res => res.json())
-            .then(data => {
-                data.forEach(item => {
-                    cat.append(new Option(item.text, item.value));
+            // Load Categories
+            fetch("/Form/GetIncidentCategories")
+                .then(res => res.json())
+                .then(data => {
+                    data.forEach(item => {
+                        cat.append(new Option(item.text, item.value));
+                    });
                 });
+
+            cat.addEventListener("change", function () {
+                sub1.disabled = true;
+                sub1.innerHTML = '<option value="">Please select</option>';
+
+                if (this.value) {
+                    fetch(`/Form/GetSubCategory1?cat=${this.value}`)
+                        .then(res => res.json())
+                        .then(data => {
+                            sub1.disabled = false;
+                            data.forEach(item => {
+                                sub1.append(new Option(item.text, item.value));
+                            });
+                        });
+                }
             });
 
-        cat.addEventListener("change", function () {
-            sub1.disabled = true;
-            sub1.innerHTML = '<option value="">Please select</option>';
+            sub1.addEventListener("change", function () {
+                sub2.disabled = true;
+                sub2.innerHTML = '<option value="">Please select</option>';
 
-            if (this.value) {
-                fetch(`/Form/GetSubCategory1?cat=${this.value}`)
-                    .then(res => res.json())
-                    .then(data => {
-                        sub1.disabled = false;
-                        data.forEach(item => {
-                            sub1.append(new Option(item.text, item.value));
+                if (this.value) {
+                    fetch(`/Form/GetSubCategory2?sub1=${this.value}`)
+                        .then(res => res.json())
+                        .then(data => {
+                            sub2.disabled = false;
+                            data.forEach(item => {
+                                sub2.append(new Option(item.text, item.value));
+                            });
                         });
-                    });
-            }
-        });
+                }
+            });
 
-        sub1.addEventListener("change", function () {
-            sub2.disabled = true;
-            sub2.innerHTML = '<option value="">Please select</option>';
+            sub2.addEventListener("change", function () {
+                sub3.disabled = true;
+                sub3.innerHTML = '<option value="">Please select</option>';
 
-            if (this.value) {
-                fetch(`/Form/GetSubCategory2?sub1=${this.value}`)
-                    .then(res => res.json())
-                    .then(data => {
-                        sub2.disabled = false;
-                        data.forEach(item => {
-                            sub2.append(new Option(item.text, item.value));
+                if (this.value) {
+                    fetch(`/Form/GetSubCategory3?sub2=${this.value}`)
+                        .then(res => res.json())
+                        .then(data => {
+                            sub3.disabled = false;
+                            data.forEach(item => {
+                                sub3.append(new Option(item.text, item.value));
+                            });
                         });
-                    });
-            }
+                }
+            });
         });
-
-        sub2.addEventListener("change", function () {
-            sub3.disabled = true;
-            sub3.innerHTML = '<option value="">Please select</option>';
-
-            if (this.value) {
-                fetch(`/Form/GetSubCategory3?sub2=${this.value}`)
-                    .then(res => res.json())
-                    .then(data => {
-                        sub3.disabled = false;
-                        data.forEach(item => {
-                            sub3.append(new Option(item.text, item.value));
-                        });
-                    });
-            }
-        });
-    });
-</script>
+    </script>
 
 
     <script>
@@ -713,16 +594,15 @@ Incident Created, Captured and Reported by @Context.Session.GetString("username"
     </script>
 
 
-@* //SECTION C *@
+    @* //SECTION C *@
+
 
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             const hospitalSelect = document.getElementById("hospitalid");
             const investigatedBySelect = document.getElementById("invesitgatedby");
 
-            hospitalSelect.addEventListener("change", function () {
-                const hospitalId = this.value;
-
+            function loadInvestigators(hospitalId, selectedValue = "") {
                 if (hospitalId) {
                     investigatedBySelect.disabled = false;
                     investigatedBySelect.innerHTML = '<option value="">Please Select</option>';
@@ -736,50 +616,55 @@ Incident Created, Captured and Reported by @Context.Session.GetString("username"
                                 opt.text = user.text;
                                 investigatedBySelect.appendChild(opt);
                             });
-                        })
-                        .catch(err => {
-                            console.error("Failed to load investigators", err);
+
+                            // Set previously selected value
+                            if (selectedValue) {
+                                investigatedBySelect.value = selectedValue;
+                                fetchInvestigatorDetails(selectedValue); // fetch details
+                            }
                         });
-                } else {
-                    investigatedBySelect.disabled = true;
-                    investigatedBySelect.innerHTML = '<option value="">Please Select</option>';
                 }
+            }
+
+            function fetchInvestigatorDetails(loginname) {
+                fetch(`/Form/GetInvestigatorDetails?loginname=${loginname}`)
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data) {
+                            document.getElementById('Name').value = data.username || '';
+                            document.getElementById('Surname').value = data.surname || '';
+                            document.getElementById('Email').value = data.email || '';
+                        }
+                    })
+                    .catch(() => {
+                        document.getElementById('Name').value = '';
+                        document.getElementById('Surname').value = '';
+                        document.getElementById('Email').value = '';
+                    });
+            }
+
+            // === INITIAL LOAD ===
+            const selectedHospital = hospitalSelect.value;
+            const selectedInvestigator = '@Model.invesitgatedby';
+
+            if (selectedHospital) {
+                loadInvestigators(selectedHospital, selectedInvestigator);
+            }
+
+            // === ON HOSPITAL CHANGE ===
+            hospitalSelect.addEventListener("change", function () {
+                loadInvestigators(this.value);
             });
 
-            // Investigator details populate when investigator selected
+            // === ON INVESTIGATOR CHANGE ===
             investigatedBySelect.addEventListener("change", function () {
-                const loginname = this.value;
-
-                if (loginname) {
-                    fetch(`/Form/GetInvestigatorDetails?loginname=${loginname}`)
-                        .then(res => res.json())
-                        .then(data => {
-                            if (data) {
-                                document.getElementById('Name').value = data.username;
-                                document.getElementById('Surname').value = data.surname;
-                                document.getElementById('Email').value = data.email;
-                            } else {
-                                document.getElementById('Name').value = '';
-                                document.getElementById('Surname').value = '';
-                                document.getElementById('Email').value = '';
-                            }
-                        })
-                        .catch(() => {
-                            document.getElementById('Name').value = '';
-                            document.getElementById('Surname').value = '';
-                            document.getElementById('Email').value = '';
-                        });
-                } else {
-                    document.getElementById('Name').value = '';
-                    document.getElementById('Surname').value = '';
-                    document.getElementById('Email').value = '';
-                }
+                fetchInvestigatorDetails(this.value);
             });
         });
     </script>
 
 
-@* SECTION D *@
+    @* SECTION D *@
 
     <script>
         document.addEventListener("DOMContentLoaded", function () {
@@ -1069,24 +954,28 @@ Incident Created, Captured and Reported by @Context.Session.GetString("username"
 
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-            fetch('/Form/GetEmp') // adjust controller name in the URL
-                .then(response => response.json())
+            fetch('/Form/GetEmp')
+                .then(response => {
+                    if (!response.ok) throw new Error("404 - Not found");
+                    return response.json();
+                })
                 .then(data => {
                     const dptSelect = document.getElementById("dptSelect");
-                    dptSelect.innerHTML = '<option value="">Please Select</option>'; // clear existing
+                    dptSelect.innerHTML = '<option value="">Please Select</option>';
                     data.forEach(item => {
                         const option = new Option(item.text, item.value);
                         dptSelect.appendChild(option);
                     });
 
-                    // Optionally set the selected value from the model if it's edit mode
                     const selectedValue = '@Model.assignedcat';
                     if (selectedValue) {
                         dptSelect.value = selectedValue;
                     }
-                });
+                })
+                .catch(error => console.error("Error loading departments:", error));
         });
     </script>
+
 
     <script>
         document.addEventListener("DOMContentLoaded", function () {
@@ -1134,6 +1023,24 @@ Incident Created, Captured and Reported by @Context.Session.GetString("username"
                             dptDetails.value = selectedStaff;
                         }
                     });
+            });
+        });
+    </script>
+
+
+    <script>
+        $(document).ready(function () {
+            $.get("/Form/GetEmp", function (data) {
+                $('#dptSelect').append(data.map(x => `<option value="${x.value}">${x.text}</option>`));
+            });
+
+            $('#dptSelect').on('change', function () {
+                var selectedDpt = $(this).val();
+                $('#dptDetails').empty().append('<option value="">Loading...</option>');
+
+                $.get(`/Form/GetEmpDetails?dpt=${selectedDpt}`, function (data) {
+                    $('#dptDetails').empty().append(data.map(x => `<option value="${x.value}">${x.text}</option>`));
+                });
             });
         });
     </script>

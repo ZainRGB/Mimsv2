@@ -76,7 +76,7 @@ namespace Mimsv2.Models
         public string ptenumber { get; set; }
         public string ptename { get; set; }
         public string ptesurname { get; set; }
-        public string ptetitle { get; set; }
+        public string ptetitle { get; set; } 
         public string reportedbyemail { get; set; }
         public string correctaction { get; set; }
         public string correctactiontime { get; set; }

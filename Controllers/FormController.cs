@@ -704,87 +704,87 @@ private async Task<List<SelectListItem>> GetSubCategories(int level, string pare
         //INPUT END
 
         //EDIT INCIDENT
-        [HttpGet]
-        public async Task<IActionResult> EditIncident(string id)
-        {
-            if (string.IsNullOrEmpty(id))
-            {
-                return NotFound();
-            }
+        //[HttpGet]
+        //public async Task<IActionResult> EditIncident(string id)
+        //{
+        //    if (string.IsNullOrEmpty(id))
+        //    {
+        //        return NotFound();
+        //    }
 
-            var model = new FormModel();
+        //    var model = new FormModel();
 
-            using var conn = new NpgsqlConnection(_configuration.GetConnectionString("DefaultConnection"));
-            await conn.OpenAsync();
+        //    using var conn = new NpgsqlConnection(_configuration.GetConnectionString("DefaultConnection"));
+        //    await conn.OpenAsync();
 
-            string sql = @"SELECT * FROM tblincident WHERE qarid = @qarid LIMIT 1";
-            using var cmd = new NpgsqlCommand(sql, conn);
-            cmd.Parameters.AddWithValue("@qarid", id);
+        //    string sql = @"SELECT * FROM tblincident WHERE qarid = @qarid LIMIT 1";
+        //    using var cmd = new NpgsqlCommand(sql, conn);
+        //    cmd.Parameters.AddWithValue("@qarid", id);
 
-            using var reader = await cmd.ExecuteReaderAsync();
-            if (await reader.ReadAsync())
-            {
-                model.qarid = reader["qarid"]?.ToString();
-                model.affectedward = reader["affectedward"]?.ToString();
-                //model.incidentarea = reader["incidentarea"]?.ToString();
-                cmd.Parameters.AddWithValue("@incidentarea", (object)model.incidentcriteria ?? DBNull.Value);
-                model.incidentcriteria = reader["incidentcriteria"]?.ToString();
-                model.incidentcriteriasub = reader["incidentcriteriasub"]?.ToString();
-                model.CapturedByLoginName = reader["requester"]?.ToString();
-                model.CapturedByEmail = reader["requesteremail"]?.ToString();
-                model.priority = reader["priority"]?.ToString();
-                model.CapturedByTitle = reader["titles"]?.ToString();
-                model.invesitgatedby = reader["invesitgatedby"]?.ToString();
-                model.assignedcat = reader["assignedcat"]?.ToString();
-                model.assignedstaff = reader["assignedstaff"]?.ToString();
-                model.incidentdate = reader["incidentdate"] as DateTime?;
-                model.incidenttime = reader["incidenttime"]?.ToString();
-                model.datereported = reader["datereported"] as DateTime?;
-                model.datecaptured = reader["datecaptured"] as DateTime?;
-                model.summary = reader["summary"]?.ToString();
-                model.description = reader["description"]?.ToString();
-                model.timecaptured = reader["timecaptured"]?.ToString();
-                model.active = reader["active"]?.ToString();
-                model.status = reader["status"]?.ToString();
-                model.hospitalid = reader["hospitalid"]?.ToString();
-                model.CapturedByName = reader["username"]?.ToString();
-                model.CapturedBySurname = reader["surname"]?.ToString();
-                model.onholddescdate = reader["onholddescdate"] as DateTime?;
-                model.closeddescdate = reader["closeddescdate"] as DateTime?;
-                model.onholddesctime = reader["onholddesctime"]?.ToString();
-                model.closeddesctime = reader["closeddesctime"]?.ToString();
-                model.onholddesc = reader["onholddesc"]?.ToString();
-                model.closeddesc = reader["closeddesc"]?.ToString();
-                model.pte = reader["pte"]?.ToString();
-                model.ptenumber = reader["ptenumber"]?.ToString();
-                model.ptename = reader["ptename"]?.ToString();
-                model.ptesurname = reader["ptesurname"]?.ToString();
-                model.ptetitle = reader["ptetitle"]?.ToString();
-                model.correctaction = reader["correctaction"]?.ToString();
-                model.correctactiontime = reader["correctactiontime"]?.ToString();
-                model.preventaction = reader["preventaction"]?.ToString();
-                model.preventactiontime = reader["preventactiontime"]?.ToString();
-                model.preventactiondate = reader["preventactiondate"] as DateTime?;
-                model.correctactiondate = reader["correctactiondate"] as DateTime?;
-                model.investigation = reader["investigation"]?.ToString();
-                model.summary2 = reader["summary2"]?.ToString();
-                model.medrelatedtotal = reader["medrelatedtotal"]?.ToString();
-                model.CapturedbyDpt = reader["reportedbydepartment"]?.ToString();
-                //model.incidentareanight = reader["incidentareanight"]?.ToString();
-                cmd.Parameters.AddWithValue("@incidentareanight", (object)model.incidentareanight ?? DBNull.Value);
-                model.acquired = reader["acquired"]?.ToString();
-                model.incidenttype = reader["incidenttype"]?.ToString();
-                model.inctypescat1 = reader["inctypescat1"]?.ToString();
-                model.inctypescat2 = reader["inctypescat2"]?.ToString();
-            }
-            else
-            {
-                return NotFound();
-            }
+        //    using var reader = await cmd.ExecuteReaderAsync();
+        //    if (await reader.ReadAsync())
+        //    {
+        //        model.qarid = reader["qarid"]?.ToString();
+        //        model.affectedward = reader["affectedward"]?.ToString();
+        //        cmd.Parameters.AddWithValue("@incidentarea", (object)model.incidentcriteria ?? DBNull.Value);
+        //        model.incidentcriteria = reader["incidentcriteria"]?.ToString();
+        //        model.incidentcriteriasub = reader["incidentcriteriasub"]?.ToString();
+        //        model.CapturedByLoginName = reader["requester"]?.ToString();
+        //        model.CapturedByEmail = reader["requesteremail"]?.ToString();
+        //        model.priority = reader["priority"]?.ToString();
+        //        model.CapturedByTitle = reader["titles"]?.ToString();
+        //        model.invesitgatedby = reader["invesitgatedby"]?.ToString();
+        //        model.assignedcat = reader["assignedcat"]?.ToString();
+        //        model.assignedstaff = reader["assignedstaff"]?.ToString();
+        //        model.incidentdate = reader["incidentdate"] as DateTime?;
+        //        model.incidenttime = reader["incidenttime"]?.ToString();
+        //        model.datereported = reader["datereported"] as DateTime?;
+        //        model.datecaptured = reader["datecaptured"] as DateTime?;
+        //        model.summary = reader["summary"]?.ToString();
+        //        model.description = reader["description"]?.ToString();
+        //        model.timecaptured = reader["timecaptured"]?.ToString();
+        //        model.active = reader["active"]?.ToString();
+        //        model.status = reader["status"]?.ToString();
+        //        model.hospitalid = reader["hospitalid"]?.ToString();
+        //        model.CapturedByName = reader["username"]?.ToString();
+        //        model.CapturedBySurname = reader["surname"]?.ToString();
+        //        model.onholddescdate = reader["onholddescdate"] as DateTime?;
+        //        model.closeddescdate = reader["closeddescdate"] as DateTime?;
+        //        model.onholddesctime = reader["onholddesctime"]?.ToString();
+        //        model.closeddesctime = reader["closeddesctime"]?.ToString();
+        //        model.onholddesc = reader["onholddesc"]?.ToString();
+        //        model.closeddesc = reader["closeddesc"]?.ToString();
+        //        model.pte = reader["pte"]?.ToString();
+        //        model.ptenumber = reader["ptenumber"]?.ToString();
+        //        model.ptename = reader["ptename"]?.ToString();
+        //        model.ptesurname = reader["ptesurname"]?.ToString();
+        //        model.ptetitle = reader["ptetitle"]?.ToString();
+        //        model.correctaction = reader["correctaction"]?.ToString();
+        //        model.correctactiontime = reader["correctactiontime"]?.ToString();
+        //        model.preventaction = reader["preventaction"]?.ToString();
+        //        model.preventactiontime = reader["preventactiontime"]?.ToString();
+        //        model.preventactiondate = reader["preventactiondate"] as DateTime?;
+        //        model.correctactiondate = reader["correctactiondate"] as DateTime?;
+        //        model.investigation = reader["investigation"]?.ToString();
+        //        model.summary2 = reader["summary2"]?.ToString();
+        //        model.medrelatedtotal = reader["medrelatedtotal"]?.ToString();
+        //        model.CapturedbyDpt = reader["reportedbydepartment"]?.ToString();
+        //        cmd.Parameters.AddWithValue("@incidentareanight", (object)model.incidentareanight ?? DBNull.Value);
+        //        model.acquired = reader["acquired"]?.ToString();
+        //        model.incidenttype = reader["incidenttype"]?.ToString();
+        //        model.inctypescat1 = reader["inctypescat1"]?.ToString();
+        //        model.inctypescat2 = reader["inctypescat2"]?.ToString();
+        //    }
+        //    else
+        //    {
+        //        return NotFound();
+        //    }
 
-            /*return View("IncidentFormInput", model);*/ // or a separate edit view if you have one
-            return View("IncidentForm", model);
-        }
+        //    /*return View("IncidentFormInput", model);*/ // or a separate edit view if you have one
+           
+        //    await PopulateDropdowns(model);
+        //    return View("IncidentForm", model);
+        //}
 
         //EDIT INCIDENT END
 
@@ -965,7 +965,184 @@ private async Task<List<SelectListItem>> GetSubCategories(int level, string pare
         //ADDENDUMS END
 
 
- 
+
+
+
+        //NEW INCIDENT EDIT
+        [HttpGet]
+        public async Task<IActionResult> EditIncident(string id)
+        {
+            if (string.IsNullOrEmpty(id))
+                return NotFound();
+
+            var model = new FormModel();
+
+            using var conn = new NpgsqlConnection(_configuration.GetConnectionString("DefaultConnection"));
+            await conn.OpenAsync();
+
+            string sql = @"SELECT * FROM tblincident WHERE qarid = @qarid LIMIT 1";
+            using var cmd = new NpgsqlCommand(sql, conn);
+            cmd.Parameters.AddWithValue("@qarid", id);
+
+            using var reader = await cmd.ExecuteReaderAsync();
+            if (await reader.ReadAsync())
+            {
+                //model.qarid = reader["qarid"]?.ToString();
+                //model.affectedward = reader["affectedward"]?.ToString();
+                //model.incidentcriteria = reader["incidentcriteria"]?.ToString();
+                //model.incidentcriteriasub = reader["incidentcriteriasub"]?.ToString();
+                //model.CapturedByLoginName = reader["requester"]?.ToString();
+                //model.CapturedByEmail = reader["requesteremail"]?.ToString();
+                //model.priority = reader["priority"]?.ToString();
+                //model.CapturedByTitle = reader["titles"]?.ToString();
+                //model.invesitgatedby = reader["invesitgatedby"]?.ToString();
+                //model.assignedcat = reader["assignedcat"]?.ToString();
+                //model.assignedstaff = reader["assignedstaff"]?.ToString();
+                //model.incidentdate = reader["incidentdate"] as DateTime?;
+                //model.incidenttime = reader["incidenttime"]?.ToString();
+                //model.datereported = reader["datereported"] as DateTime?;
+                //model.datecaptured = reader["datecaptured"] as DateTime?;
+                //model.summary = reader["summary"]?.ToString();
+                //model.description = reader["description"]?.ToString();
+                //model.timecaptured = reader["timecaptured"]?.ToString();
+                //model.active = reader["active"]?.ToString();
+                //model.status = reader["status"]?.ToString();
+                //model.hospitalid = reader["hospitalid"]?.ToString();
+                //model.CapturedByName = reader["username"]?.ToString();
+                //model.CapturedBySurname = reader["surname"]?.ToString();
+                //model.onholddescdate = reader["onholddescdate"] as DateTime?;
+                //model.closeddescdate = reader["closeddescdate"] as DateTime?;
+                //model.onholddesctime = reader["onholddesctime"]?.ToString();
+                //model.closeddesctime = reader["closeddesctime"]?.ToString();
+                //model.onholddesc = reader["onholddesc"]?.ToString();
+                //model.closeddesc = reader["closeddesc"]?.ToString();
+                //model.pte = reader["pte"]?.ToString();
+                //model.ptenumber = reader["ptenumber"]?.ToString();
+                //model.ptename = reader["ptename"]?.ToString();
+                //model.ptesurname = reader["ptesurname"]?.ToString();
+                //model.ptetitle = reader["ptetitle"]?.ToString();
+                //model.correctaction = reader["correctaction"]?.ToString();
+                //model.correctactiontime = reader["correctactiontime"]?.ToString();
+                //model.preventaction = reader["preventaction"]?.ToString();
+                //model.preventactiontime = reader["preventactiontime"]?.ToString();
+                //model.preventactiondate = reader["preventactiondate"] as DateTime?;
+                //model.correctactiondate = reader["correctactiondate"] as DateTime?;
+                //model.investigation = reader["investigation"]?.ToString();
+                //model.summary2 = reader["summary2"]?.ToString();
+                //model.medrelatedtotal = reader["medrelatedtotal"]?.ToString();
+                //model.CapturedbyDpt = reader["reportedbydepartment"]?.ToString();
+                //model.acquired = reader["acquired"]?.ToString();
+                //model.incidenttype = reader["incidenttype"]?.ToString();
+                //model.inctypescat1 = reader["inctypescat1"]?.ToString();
+                //model.inctypescat2 = reader["inctypescat2"]?.ToString();
+                //model.inctypescat3 = reader["inctypescat3"]?.ToString();
+                //model.IsDayShift = reader["dayshift"]?.ToString() == "Y";
+                //model.IsNightShift = reader["nightshift"]?.ToString() == "Y";
+
+
+                model.qarid = reader["qarid"]?.ToString();
+                model.affectedward = reader["affectedward"]?.ToString();
+                cmd.Parameters.AddWithValue("@incidentarea", (object)model.incidentcriteria ?? DBNull.Value);
+                model.incidentcriteria = reader["incidentcriteria"]?.ToString();
+                model.incidentcriteriasub = reader["incidentcriteriasub"]?.ToString();
+                model.CapturedByLoginName = reader["requester"]?.ToString();
+                model.CapturedByEmail = reader["requesteremail"]?.ToString();
+                model.priority = reader["priority"]?.ToString();
+                model.CapturedByTitle = reader["titles"]?.ToString();
+                model.invesitgatedby = reader["invesitgatedby"]?.ToString();
+                model.assignedcat = reader["assignedcat"]?.ToString();
+                model.assignedstaff = reader["assignedstaff"]?.ToString();
+                model.incidentdate = reader["incidentdate"] as DateTime?;
+                model.incidenttime = reader["incidenttime"]?.ToString();
+                model.datereported = reader["datereported"] as DateTime?;
+                model.datecaptured = reader["datecaptured"] as DateTime?;
+                model.summary = reader["summary"]?.ToString();
+                model.description = reader["description"]?.ToString();
+                model.timecaptured = reader["timecaptured"]?.ToString();
+                model.active = reader["active"]?.ToString();
+                model.status = reader["status"]?.ToString();
+                model.hospitalid = reader["hospitalid"]?.ToString();
+                model.CapturedByName = reader["username"]?.ToString();
+                model.CapturedBySurname = reader["surname"]?.ToString();
+                model.onholddescdate = reader["onholddescdate"] as DateTime?;
+                model.closeddescdate = reader["closeddescdate"] as DateTime?;
+                model.onholddesctime = reader["onholddesctime"]?.ToString();
+                model.closeddesctime = reader["closeddesctime"]?.ToString();
+                model.onholddesc = reader["onholddesc"]?.ToString();
+                model.closeddesc = reader["closeddesc"]?.ToString();
+                model.pte = reader["pte"]?.ToString();
+                model.ptenumber = reader["ptenumber"]?.ToString();
+                model.ptename = reader["ptename"]?.ToString();
+                model.ptesurname = reader["ptesurname"]?.ToString();
+                model.ptetitle = reader["ptetitle"]?.ToString();
+                model.correctaction = reader["correctaction"]?.ToString();
+                model.correctactiontime = reader["correctactiontime"]?.ToString();
+                model.preventaction = reader["preventaction"]?.ToString();
+                model.preventactiontime = reader["preventactiontime"]?.ToString();
+                model.preventactiondate = reader["preventactiondate"] as DateTime?;
+                model.correctactiondate = reader["correctactiondate"] as DateTime?;
+                model.investigation = reader["investigation"]?.ToString();
+                model.summary2 = reader["summary2"]?.ToString();
+                model.medrelatedtotal = reader["medrelatedtotal"]?.ToString();
+                model.CapturedbyDpt = reader["reportedbydepartment"]?.ToString();
+                cmd.Parameters.AddWithValue("@incidentareanight", (object)model.incidentareanight ?? DBNull.Value);
+                model.acquired = reader["acquired"]?.ToString();
+                model.incidenttype = reader["incidenttype"]?.ToString();
+                model.inctypescat1 = reader["inctypescat1"]?.ToString();
+                model.inctypescat2 = reader["inctypescat2"]?.ToString();
+
+            }
+
+            await PopulateDropdowns(model); // your existing dropdown helper
+
+            return View("IncidentEdit", model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> EditIncident(FormModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                await PopulateDropdowns(model);
+                return View("IncidentEdit", model);
+            }
+
+            using var conn = new NpgsqlConnection(_configuration.GetConnectionString("DefaultConnection"));
+            await conn.OpenAsync();
+
+            string sql = @"UPDATE tblincident SET
+                    affectedward = @affectedward,
+                    incidentcriteria = @incidentcriteria,
+                    incidentcriteriasub = @incidentcriteriasub,
+                    assignedcat = @assignedcat,
+                    assignedstaff = @assignedstaff,
+                    summary = @summary,
+                    description = @description,
+                    dayshift = @dayshift,
+                    nightshift = @nightshift,
+                    status = @status
+                WHERE qarid = @qarid";
+
+            using var cmd = new NpgsqlCommand(sql, conn);
+            cmd.Parameters.AddWithValue("@qarid", model.qarid ?? "");
+            cmd.Parameters.AddWithValue("@affectedward", model.affectedward ?? "");
+            cmd.Parameters.AddWithValue("@incidentcriteria", model.incidentcriteria ?? "");
+            cmd.Parameters.AddWithValue("@incidentcriteriasub", model.incidentcriteriasub ?? "");
+            cmd.Parameters.AddWithValue("@assignedcat", model.assignedcat ?? "");
+            cmd.Parameters.AddWithValue("@assignedstaff", model.assignedstaff ?? "");
+            cmd.Parameters.AddWithValue("@summary", model.summary ?? "");
+            cmd.Parameters.AddWithValue("@description", model.description ?? "");
+            cmd.Parameters.AddWithValue("@dayshift", model.IsDayShift ? "Y" : "N");
+            cmd.Parameters.AddWithValue("@nightshift", model.IsNightShift ? "Y" : "N");
+            cmd.Parameters.AddWithValue("@status", model.status ?? "");
+
+            await cmd.ExecuteNonQueryAsync();
+            await PopulateDropdowns(model);
+            return View("IncidentEdit", model); // Or wherever you want to go after update
+        }
+
+        //NEW INCIDENT EDIT END
+
 
     }
 }
